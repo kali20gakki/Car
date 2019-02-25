@@ -89,22 +89,11 @@ int main(void)
 
     /*******************************************************************************/
     OLED_ShowString(64, 0, "PID TEST");
-    Target_A = 40;       
+    Target_A = -40;       
     Target_B = -40;
-    Target_C = -40;
+    Target_C = 40;
     Target_D = 40;
     
-    delay_ms(500);
-    delay_ms(500);
-    delay_ms(500);
-    delay_ms(500);
-    delay_ms(500);
-    delay_ms(500);
-    delay_ms(500);
-    Target_A = 0;       
-    Target_B = 0;
-    Target_C = 0;
-    Target_D = 0;
     while(1)
     {
         HC05_Send_Encoders(Encoder_A, Encoder_B, Encoder_C, Encoder_D); 

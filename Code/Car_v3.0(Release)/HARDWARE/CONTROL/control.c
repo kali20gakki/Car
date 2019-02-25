@@ -54,28 +54,28 @@ void Set_PWM(int motorA, int motorB, int motorC, int motorD)
     /****************** MotorA*******************/
     if(motorA >= 0)
     {
-        AIN2 = 1;
-        AIN1 = 0;
+        AIN2 = 0;
+        AIN1 = 1;
         PWMA = abs(motorA);
     }
     else
     {
-        AIN2 = 0;
-        AIN1 = 1;
+        AIN2 = 1;
+        AIN1 = 0;
         PWMA = abs(motorA);
     }
 
     /****************** MotorB*******************/
     if(motorB >= 0)
     {
-        BIN2 = 1;
-        BIN1 = 0;
+        BIN2 = 0;
+        BIN1 = 1;
         PWMB = abs(motorB);
     }
     else
     {
-        BIN2 = 0;
-        BIN1 = 1;
+        BIN2 = 1;
+        BIN1 = 0;
         PWMB = abs(motorB);
     }
 
