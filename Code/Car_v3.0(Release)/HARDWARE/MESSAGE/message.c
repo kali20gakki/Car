@@ -23,6 +23,8 @@
 #include "oled.h"
 #include "string.h"
 #include "usart3.h"
+#include "strategy.h"
+#include "string.h"
 
 
 extern int Encoder_A;
@@ -30,8 +32,11 @@ extern int Encoder_B;
 extern int Encoder_C;
 extern int Encoder_D;
 
+extern u16 QrcodeNum;
+
 unsigned char i;          //计数变量
 unsigned char Send_Count; //串口需要发送的数据个数
+
 
 
 /*
@@ -56,52 +61,46 @@ void OLED_Show_Qcode(void)
     OLED_ShowString(64, 0, ":");
     if(USART3_RX_STA & 0x8000)
     {
-        flag_Qc = strcmp(USART3_RX_BUF, "123"); //红绿蓝
-        if(flag_Qc == 0)
+        QrcodeNum = atoi(USART3_RX_BUF);
+        switch(QrcodeNum)
         {
-            OLED_ShowCHinese(80, 0, 1);
-            OLED_ShowCHinese(96, 0, 2);
-            OLED_ShowCHinese(112, 0, 3);
-        }
+            case 123 :  // 红绿蓝
+            {
+                OLED_ShowCHinese(80, 0, 1);
+                OLED_ShowCHinese(96, 0, 2);
+                OLED_ShowCHinese(112, 0, 3);
+            }
+            case 132 :  // 红蓝绿
+            {
+                OLED_ShowCHinese(80, 0, 1);
+                OLED_ShowCHinese(96, 0, 3);
+                OLED_ShowCHinese(112, 0, 2);
+            } 
+            case 213 :  // 绿红蓝
+            {
+                OLED_ShowCHinese(80, 0, 2);
+                OLED_ShowCHinese(96, 0, 1);
+                OLED_ShowCHinese(112, 0, 3);
+            }
+            case 231 :  // 绿蓝红
+            {
+                OLED_ShowCHinese(80, 0, 2);
+                OLED_ShowCHinese(96, 0, 3);
+                OLED_ShowCHinese(112, 0, 1);
+            }
+            case 312 :  // 蓝红绿
+            {
+                OLED_ShowCHinese(80, 0, 3);
+                OLED_ShowCHinese(96, 0, 1);
+                OLED_ShowCHinese(112, 0, 2);
+            }
+            case 321 :  // 蓝绿红
+            {
+                OLED_ShowCHinese(80, 0, 3);
+                OLED_ShowCHinese(96, 0, 2);
+                OLED_ShowCHinese(112, 0, 1);
+            }
 
-        flag_Qc = strcmp(USART3_RX_BUF, "132"); //红蓝绿
-        if(flag_Qc == 0)
-        {
-            OLED_ShowCHinese(80, 0, 1);
-            OLED_ShowCHinese(96, 0, 3);
-            OLED_ShowCHinese(112, 0, 2);
-        }
-
-        flag_Qc = strcmp(USART3_RX_BUF, "213"); //绿红蓝
-        if(flag_Qc == 0)
-        {
-            OLED_ShowCHinese(80, 0, 2);
-            OLED_ShowCHinese(96, 0, 1);
-            OLED_ShowCHinese(112, 0, 3);
-        }
-
-        flag_Qc = strcmp(USART3_RX_BUF, "231"); //绿蓝红
-        if(flag_Qc == 0)
-        {
-            OLED_ShowCHinese(80, 0, 2);
-            OLED_ShowCHinese(96, 0, 3);
-            OLED_ShowCHinese(112, 0, 1);
-        }
-
-        flag_Qc = strcmp(USART3_RX_BUF, "312"); //蓝红绿
-        if(flag_Qc == 0)
-        {
-            OLED_ShowCHinese(80, 0, 3);
-            OLED_ShowCHinese(96, 0, 1);
-            OLED_ShowCHinese(112, 0, 2);
-        }
-
-        flag_Qc = strcmp(USART3_RX_BUF, "321"); //蓝绿红
-        if(flag_Qc == 0)
-        {
-            OLED_ShowCHinese(80, 0, 3);
-            OLED_ShowCHinese(96, 0, 2);
-            OLED_ShowCHinese(112, 0, 1);
         }
 
         USART3_RX_STA = 0; //重置接收位

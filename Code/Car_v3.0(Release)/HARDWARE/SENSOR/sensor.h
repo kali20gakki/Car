@@ -23,20 +23,20 @@
 #define __SENSOR_H_
 #include "sys.h"
 
-
-#define SENSOR_FRONT_L GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
-#define SENSOR_FRONT_M GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
-#define SENSOR_FRONT_R GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_13)
-
-#define SENSOR_BACK_L GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
-#define SENSOR_BACK_M GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
-#define SENSOR_BACK_R GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_11)
-
-#define SENSOR_LEFT_U PAin(1)
-#define SENSOR_LEFT_D PAin(2)
-
-#define SNESOR_RIGHT_U PAin(3)
-#define SNESOR_RIGHT_D PAin(4)
+/* 前 */
+#define SENSOR_FRONT_L             PCin(3)   //PC3
+#define SENSOR_FRONT_M             PEin(5)   //PE5
+#define SENSOR_FRONT_R             PCin(13)  //PC13
+/* 后 */
+#define SENSOR_BACK_L              PEin(6)   //PE6
+#define SENSOR_BACK_M              PCin(14)  //PC14
+#define SENSOR_BACK_R              PCin(0)   //PC0
+/* 左 */
+#define SENSOR_LEFT_U              PAin(2)   //PA2  
+#define SENSOR_LEFT_D              PAin(3)   //PA3
+/* 右 */
+#define SNESOR_RIGHT_U             PCin(15)  //PC15
+#define SNESOR_RIGHT_D             PCin(1)   //PC1
 
 
 #endif

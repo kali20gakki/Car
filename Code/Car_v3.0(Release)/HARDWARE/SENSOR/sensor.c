@@ -14,19 +14,9 @@
 **
 **           根据实际安装需求更改以及头文件
 **
-**           遇到黑线 灯亮 低电平 （待检查）
-**			 遇到空白 灯灭 高电平
+**           遇到黑线 灯灭 高电平 （已检查）
+**			 遇到空白 灯亮 低电平
 **
-**           Sensor1   -------  PC1
-**           Sensor2   -------  PC15
-**           Sensor3   -------  PA5
-**           Sensor4   -------  PA3
-**           Sensor5   -------  PC3
-**           Sensor6   -------  PE5
-**           Sensor7   -------  PC13
-**           Sensor8   -------  PC0
-**           Sensor9   -------  PC14
-**           Sensor10  -------  PE6
 **
 **
 **
@@ -63,13 +53,19 @@ void Sensor_Track_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     /* 使能时钟 */
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOE, ENABLE);
     /* IO初始化 */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_13;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-    GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化
+    GPIO_Init(GPIOC, &GPIO_InitStructure);//初始化
+    
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+    GPIO_Init(GPIOE, &GPIO_InitStructure);//初始化
 }
 
 
@@ -91,31 +87,60 @@ void Sensor_Count_Init(void)
     NVIC_InitTypeDef NVIC_InitStructure;
     EXTI_InitTypeDef EXTI_InitStructure;
 
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOE, ENABLE); //使能 GPIOD,GPIOE 时钟
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOC, ENABLE); //使能 GPIOA 时钟
 
-    /* IO初始化 */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_13 | GPIO_Pin_15;
+    /* PA2 PA3 */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3 ;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-    GPIO_Init(GPIOE, &GPIO_InitStructure);//初始化
+    GPIO_Init(GPIOA, &GPIO_InitStructure);//初始化
+    
+    /* PC1 PC15 */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_15 ;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
+    GPIO_Init(GPIOC, &GPIO_InitStructure);//初始化
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);//使能 SYSCFG 时钟
 
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource11);//PE11 连接线 11
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource13);//PE11 连接线 13
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource15);//PE11 连接线 15
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource2); //PA2  连接线 2
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource3); //PA3  连接线 3
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource1); //PC1  连接线 1
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource15);//PC15 连接线 15
 
-    /* 配置 EXTI_Line11 13 15 */
-    EXTI_InitStructure.EXTI_Line = EXTI_Line11 | EXTI_Line13 | EXTI_Line15;
+    /* 配置 中断线 */
+    EXTI_InitStructure.EXTI_Line = EXTI_Line2 | EXTI_Line3 | EXTI_Line1| EXTI_Line15;
     EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
     EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //下降沿触发
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能 LINE11
     EXTI_Init(&EXTI_InitStructure);
 
-    /* 中断初始化 LINE10 - 15 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI15_10_IRQn;//外部中断 11
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级 0
+    /* 中断初始化 LINE15 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI15_10_IRQn;//外部中断 15
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+    
+    /* 中断初始化 LINE1 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI1_IRQn;//外部中断 1
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+    
+    /* 中断初始化 LINE2 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI2_IRQn;//外部中断 1
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+    
+    /* 中断初始化 LINE3 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI3_IRQn;//外部中断 1
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC

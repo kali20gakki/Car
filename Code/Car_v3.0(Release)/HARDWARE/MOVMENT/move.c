@@ -26,8 +26,6 @@
 
 /* 单精度浮点 7位有效 */
 const float PI_180 = 0.0174533f;         // PI/180 减少计算量
-const float CAR_WIDTH_HALF  = 0.1025f;   // 小车宽度一半
-const float CAR_LENGTH_HALF = 0.140f;    // 小车长度一半
 
 extern volatile int Target_A, Target_B, Target_C, Target_D;
 
@@ -46,12 +44,12 @@ extern volatile int Target_A, Target_B, Target_C, Target_D;
 * @note  : None
 *
 */
-void Kinematic_Analysis(float Vx, float Vy, float Vz)
+void Kinematic_Analysis(int Vx, int Vy)
 {
-    Target_A   = -Vx + Vy - Vz * (CAR_WIDTH_HALF + CAR_LENGTH_HALF);
-    Target_B   = +Vx + Vy - Vz * (CAR_WIDTH_HALF + CAR_LENGTH_HALF);
-    Target_C   = -Vx + Vy + Vz * (CAR_WIDTH_HALF + CAR_LENGTH_HALF);
-    Target_D   = +Vx + Vy + Vz * (CAR_WIDTH_HALF + CAR_LENGTH_HALF);
+    Target_A = +Vx - Vy;
+    Target_B = -Vx - Vy;
+    Target_C = -Vx + Vy;
+    Target_D = +Vx + Vy;
 }
 
 
@@ -77,28 +75,28 @@ void Car_SetMove(u8 velocity, float angle)
     {
         Vx = velocity * cosf(angle * PI_180);
         Vy = velocity * sinf(angle * PI_180);
-        Kinematic_Analysis(Vx, Vy, 0);
+        Kinematic_Analysis(Vx, Vy);
     }
     else if(angle > 90 && angle <= 180)  // 速度矢量在 第二象限
     {
         delta = 180 - angle;
         Vx = velocity * cosf(angle * PI_180);
         Vy = velocity * sinf(angle * PI_180);
-        Kinematic_Analysis(-Vx, Vy, 0);
+        Kinematic_Analysis(-Vx, Vy);
     }
     else if(angle > 180 && angle <= 270) // 速度矢量在 第三象限
     {
         delta = 270 - angle;
         Vx = velocity * cosf(angle * PI_180);
         Vy = velocity * sinf(angle * PI_180);
-        Kinematic_Analysis(-Vx, -Vy, 0);
+        Kinematic_Analysis(-Vx, -Vy);
     }
     else if(angle > 270 && angle < 360)  // 速度矢量在 第四象限
     {
         delta = 360 - angle;
         Vx = velocity * cosf(angle * PI_180);
         Vy = velocity * sinf(angle * PI_180);
-        Kinematic_Analysis(Vx, -Vy, 0);
+        Kinematic_Analysis(Vx, -Vy);
     }
 }
 
@@ -116,17 +114,18 @@ void Car_SetMove(u8 velocity, float angle)
 */
 void Car_TrackFront(void)
 {
-    if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0 && SENSOR_FRONT_M == 1)//没有偏离
+    if((SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0 )|| (SENSOR_FRONT_L == 1 && SENSOR_FRONT_R == 1))//没有偏离
     {
-        Car_SetMove(40, 90);  // 直走
+        Kinematic_Analysis(0, 35); // 直走
+        delay_ms(500);
     }
-    else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0 && SENSOR_FRONT_M == 1) // 左偏
+    else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 1) // 左偏
     {
-        Car_SetMove(20, 0);  // 右平移
+        Kinematic_Analysis(5, 0); // 右平移
     }
-    else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0 && SENSOR_FRONT_M == 1) // 右偏
+    else if(SENSOR_FRONT_L == 1 && SENSOR_FRONT_R == 0) // 右偏
     {
-        Car_SetMove(20, 180);  // 左平移
+        Kinematic_Analysis(-5, 0); // 左平移
     }
 }
 
@@ -162,15 +161,15 @@ void Car_TrackLeft(void)
 {
     if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 1) // 没有偏离
     {
-        
+
     }
     else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 1) // 上偏
     {
-        
+
     }
     else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 1) // 下偏
     {
-        
+
     }
 }
 
@@ -178,16 +177,16 @@ void Car_TrackRight(void)
 {
     if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 1) // 没有偏离
     {
-        
+
     }
     else if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 1) // 上偏
     {
-        
+
     }
     else if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 1) // 下偏
     {
-        
+
     }
-    
+
 }
 /********************************End of File************************************/

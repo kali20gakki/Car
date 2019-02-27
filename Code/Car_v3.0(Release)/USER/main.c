@@ -79,24 +79,23 @@ int main(void)
     Encoder_MotorB_Init();                           // 电机B编码器初始化
     Encoder_MotorC_Init();                           // 电机C编码器初始化
     Encoder_MotorD_Init();                           // 电机D编码器初始化
-    //Sensor_Track_Init();                             // 循迹传感器初始化
+    Sensor_Track_Init();                             // 循迹传感器初始化
     //Sensor_Count_Init();                             // 循迹计数器初始化
-   // KEY_Init();                                      // 按键初始化
-    //Beep_Init();                                     // 蜂鸣器初始化
+    KEY_Init();                                      // 按键初始化
+    Beep_Init();                                     // 蜂鸣器初始化
     IIC_Init();                                      // OLED IIC初始化
     OLED_Init();                                     // OLED初始化
     OLED_Clear();                                    // OLED复位
 
     /*******************************************************************************/
-    OLED_ShowString(64, 0, "PID TEST");
-    Target_A = -40;       
-    Target_B = -40;
-    Target_C = 40;
-    Target_D = 40;
+   // OLED_ShowString(64, 0, "Sensor");
     
+    //Car_SetMove(30,306);
     while(1)
     {
-        HC05_Send_Encoders(Encoder_A, Encoder_B, Encoder_C, Encoder_D); 
+        Car_TrackFront();
+
+        //HC05_Send_Encoders(Encoder_A, Encoder_B, Encoder_C, Encoder_D); 
         //while(1);
     }
 }

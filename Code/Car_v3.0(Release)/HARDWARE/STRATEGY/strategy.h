@@ -7,9 +7,9 @@
 **                           Blog: www.mrtutu.cn
 **
 **----------------------------------文件信息------------------------------------
-** @flie    : move.h
+** @flie    : strategy.h
 ** @auther  : Mrtutu
-** @date    : 2019-02-17
+** @date    : 2019-02-26
 ** @describe: 
 **
 **----------------------------------版本信息------------------------------------
@@ -19,12 +19,9 @@
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
  
-#ifndef __MOVE_H_
-#define __MOVE_H_
+#ifndef __STRATEGY_H_
+#define __STRATEGY_H_
 #include "sys.h"
-
-void Kinematic_Analysis(int Vx, int Vy);
-void Car_SetMove(u8 velocity, float angle);
 
 #endif
 
