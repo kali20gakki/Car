@@ -124,26 +124,26 @@ void Sensor_Count_Init(void)
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC
     
-    /* 中断初始化 LINE1 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI1_IRQn;//外部中断 1
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
-    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
-    
-    /* 中断初始化 LINE2 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI2_IRQn;//外部中断 1
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
-    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
-    
-    /* 中断初始化 LINE3 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI3_IRQn;//外部中断 1
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
-    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+//    /* 中断初始化 LINE1 */
+//    NVIC_InitStructure.NVIC_IRQChannel =  EXTI1_IRQn;//外部中断 1
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+//    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+//    
+//    /* 中断初始化 LINE2 */
+//    NVIC_InitStructure.NVIC_IRQChannel =  EXTI2_IRQn;//外部中断 1
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+//    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+//    
+//    /* 中断初始化 LINE3 */
+//    NVIC_InitStructure.NVIC_IRQChannel =  EXTI3_IRQn;//外部中断 1
+//    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+//    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+//    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+//    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
 
 }
 
@@ -161,31 +161,15 @@ void Sensor_Count_Init(void)
 *          中断线 10-15 共用中断函数 EXTI15_10_IRQHandler
 *
 */
-//void EXTI15_10_IRQHandler(void)
-//{
-//    delay_ms(10);      //适当延时防止毛刺干扰
-//    /* LINE11中断判断 */
-//    if(EXTI_GetITStatus(EXTI_Line11) != RESET)
-//    {
-//        /* 中断逻辑 */
-//        if(SENSOR1 == 0)count1++;
-//        EXTI_ClearITPendingBit(EXTI_Line11); //清除 LINE 上的中断标志位
-//    }
-
-//    /* LINE13中断判断 */
-//    if(EXTI_GetITStatus(EXTI_Line13) != RESET)
-//    {
-//        /* 中断逻辑 */
-//        if(SENSOR2 == 0)count2++;
-//        EXTI_ClearITPendingBit(EXTI_Line13); //清除 LINE 上的中断标志位
-//    }
-
-//    /* LINE15中断判断 */
-//    if(EXTI_GetITStatus(EXTI_Line15) != RESET)
-//    {
-//        /* 中断逻辑 */
-//        if(SENSOR5 == 0)count3++;
-//        EXTI_ClearITPendingBit(EXTI_Line15); //清除 LINE 上的中断标志位
-//    }
-//}
+void EXTI15_10_IRQHandler(void)
+{
+    delay_ms(10);      //适当延时防止毛刺干扰
+    /* LINE15中断判断 */
+    if(EXTI_GetITStatus(EXTI_Line15) != RESET)
+    {
+        /* 中断逻辑 */
+        if(SNESOR_RIGHT_U == 0)count3++;
+        EXTI_ClearITPendingBit(EXTI_Line15); //清除 LINE 上的中断标志位
+    }
+}
 /********************************End of File************************************/

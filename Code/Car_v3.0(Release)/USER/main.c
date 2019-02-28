@@ -54,7 +54,7 @@ volatile int Target_A, Target_B, Target_C, Target_D;  // 目标速度
 /* 计数器 */
 int count1 = 0;
 int count2 = 0;
-int count3 = 0;
+volatile int count3;
 /*******************************************************************************/
 
 /**********************************标志位***************************************/
@@ -80,7 +80,7 @@ int main(void)
     Encoder_MotorC_Init();                           // 电机C编码器初始化
     Encoder_MotorD_Init();                           // 电机D编码器初始化
     Sensor_Track_Init();                             // 循迹传感器初始化
-    //Sensor_Count_Init();                             // 循迹计数器初始化
+    Sensor_Count_Init();                             // 循迹计数器初始化
     KEY_Init();                                      // 按键初始化
     Beep_Init();                                     // 蜂鸣器初始化
     IIC_Init();                                      // OLED IIC初始化
@@ -88,15 +88,21 @@ int main(void)
     OLED_Clear();                                    // OLED复位
 
     /*******************************************************************************/
-   // OLED_ShowString(64, 0, "Sensor");
-    
+    OLED_ShowString(64, 0, "Sensor");
+
     //Car_SetMove(30,306);
     while(1)
     {
-        Car_TrackFront();
-
-        //HC05_Send_Encoders(Encoder_A, Encoder_B, Encoder_C, Encoder_D); 
-        //while(1);
+        //Car_TrackFront();
+        while(count3 < 6)
+        {
+           Car_TrackFront();
+           OLED_ShowNum(0,0,count3);
+        }
+        Car_SetMove(0,0);
+        //HC05_Send_Encoders(Encoder_A, Encoder_B, Encoder_C, Encoder_D);
+        //OLED_ShowNum(0, 0, count3);
+        while(1);
     }
 }
 /********************************End of File************************************/
