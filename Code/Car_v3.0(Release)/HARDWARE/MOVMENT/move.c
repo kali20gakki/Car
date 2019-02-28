@@ -116,7 +116,7 @@ void Car_TrackFront(void)
 {
     if((SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0)) //没有偏离
     {
-        Kinematic_Analysis(0, 40); // 直走
+        Kinematic_Analysis(0, 45); // 直走
     }
     else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 1) // 左偏
     {
@@ -152,23 +152,23 @@ void Car_TrackBack(void)
 {
     if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 0) // 没有偏离
     {
-        Kinematic_Analysis(0, -40); // 后退
+        Kinematic_Analysis(0, -30); // 后退
     }
     else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 1) // 左偏
     {
         /* 速度差5 */
-        Target_A =  40;
-        Target_B =  40;
-        Target_C = -45;
-        Target_D = -45;
+        Target_A =  30;
+        Target_B =  30;
+        Target_C = -35;
+        Target_D = -35;
     }
-    else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 0) // 右偏
+    else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 右偏
     {
         /* 速度差5 */
-        Target_A =  45;
-        Target_B =  45;
-        Target_C = -40;
-        Target_D = -40;
+        Target_A =  35;
+        Target_B =  35;
+        Target_C = -30;
+        Target_D = -30;
     }
 }
 
@@ -188,23 +188,23 @@ void Car_TrackLeft(void)
 {
     if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 0) // 没有偏离
     {
-        Kinematic_Analysis(-30, 0);
+        Kinematic_Analysis(-25, 0);
     }
-    else if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 1) // 上偏
+    else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 0) // 上偏
     {
         /* 速度差5 */
-        Target_A = -30;
-        Target_B =  35;
-        Target_C =  35;
-        Target_D = -30;
+        Target_A = -25;
+        Target_B =  20;
+        Target_C =  20;
+        Target_D = -25;
     }
     else if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 1) // 下偏
     {
         /* 速度差5 */
-        Target_A = -35;
-        Target_B =  30;
-        Target_C =  30;
-        Target_D = -35;
+        Target_A = -20;
+        Target_B =  25;
+        Target_C =  25;
+        Target_D = -20;
     }
 }
 
@@ -224,23 +224,27 @@ void Car_TrackRight(void)
 {
     if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 0) // 没有偏离
     {
-       Kinematic_Analysis(30, 0);
+        Kinematic_Analysis(25, 0);
+
     }
     else if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 1) // 上偏
     {
         /* 速度差5 */
-        Target_A =  30;
-        Target_B = -35;
-        Target_C = -35;
-        Target_D =  30;
+        Target_A =  20;
+        Target_B = -25;
+        Target_C = -25;
+        Target_D =  20;
+
+
     }
     else if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 0) // 下偏
     {
         /* 速度差5 */
-        Target_A =  35;
-        Target_B = -30;
-        Target_C = -30;
-        Target_D =  35;
+        Target_A =  25;
+        Target_B = -20;
+        Target_C = -20;
+        Target_D =  25;
+
     }
 
 }
