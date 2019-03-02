@@ -52,9 +52,11 @@ volatile int Target_A, Target_B, Target_C, Target_D;  // 目标速度
 
 
 /* 计数器 */
-int count1 = 0;
-int count2 = 0;
-volatile int count3;
+volatile u8 COUNT_FRONT_L;
+volatile u8 COUNT_FRONT_R;
+volatile u8 COUNT_LEFT_U;
+volatile u8 COUNT_RIGHT_U;
+volatile u8 COUNT_RIGHT_D;
 /*******************************************************************************/
 
 /**********************************标志位***************************************/
@@ -72,7 +74,7 @@ int main(void)
     usart3_Init(9600);                               // OpenMV
     uart5_Init(9600);                                // 串口5
     Servo_Init(10000 - 1, 56 - 1);                   // 舵机PWM频率为300Hz
-    TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：5ms
+    TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms
     Motor_Init(1000 - 1, 42 - 1);                    // 电机PWM频率为2KHz
     Motor_Pin_Init();                                // 电机方向控制引脚初始化
     Encoder_MotorA_Init();                           // 电机A编码器初始化
@@ -80,7 +82,6 @@ int main(void)
     Encoder_MotorC_Init();                           // 电机C编码器初始化
     Encoder_MotorD_Init();                           // 电机D编码器初始化
     Sensor_Track_Init();                             // 循迹传感器初始化
-   // Sensor_Count_Init();                             // 循迹计数器初始化
     KEY_Init();                                      // 按键初始化
     Beep_Init();                                     // 蜂鸣器初始化
     IIC_Init();                                      // OLED IIC初始化
@@ -88,49 +89,37 @@ int main(void)
     OLED_Clear();                                    // OLED复位
 
     /*******************************************************************************/
-    OLED_ShowString(64, 0, "Sensor");
+    //OLED_ShowString(64, 0, "Test");
 
-    //Car_SetMove(30,306);
+    Servo4_SetAngle(90);
+    Servo3_SetAngle(0);
+    Servo2_SetAngle(145);
+    Servo1_SetAngle(90);
+    delay_Ntimes(1);
     while(1)
     {
-       //Car_TrackRight();
-//        Car_TrackFront();
-//        while(count3 < 6)
-//        {
-//           Car_TrackFront();
-//           OLED_ShowNum(0,0,count3);
-//        }
-//        Car_SetMove(0,0);
-//        delay_ms(500);
-//        Car_TrackBack();
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        Car_TrackLeft();
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        delay_ms(500);
-//        Car_SetMove(0,0);
-//        while(1);
-        Car_TrackLeft();
-      HC05_Send_Encoders(Encoder_A,Encoder_B,Encoder_C,Encoder_D);
+        Task_MoveLeft();
+        delay_ms(500);
+        Task_MovePad();
+        delay_Ntimes(2);
+        Task_MoveMaterials();
+        delay_Ntimes(2);
+        Task_MovePlaceToMaterials();
+        delay_Ntimes(2);
+        Task_MoveFromPlaceToMaterials();
+        delay_Ntimes(2);
+        Task_MovePlaceToMaterials();
+        delay_Ntimes(2);
+        Task_MoveFromPlaceToMaterials();
+        delay_Ntimes(2);
+        Task_MovePlaceToMaterials();
+        delay_Ntimes(2);
+        Task_MoveStartPoint_4X3();
+        
+
+        while(1);
     }
 }
+
+
 /********************************End of File************************************/

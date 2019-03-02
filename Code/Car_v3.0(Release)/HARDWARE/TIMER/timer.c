@@ -26,12 +26,11 @@
 #include "motor.h"
 #include "encoder.h"
 #include "control.h"
-#include "hc05.h"
+#include "sensor.h"
 
 extern volatile int Motor_A,Motor_B,Motor_C,Motor_D;         // PI算法返回赋值 临时PWM值
 extern volatile int Encoder_A,Encoder_B,Encoder_C,Encoder_D; // 编码器返回赋值 
 extern volatile int Target_A,Target_B,Target_C,Target_D;
-
 
 
 /*
@@ -63,7 +62,7 @@ void TIM7_Int_Init(u16 arr, u16 psc)
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn; //定时器 7 中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级 0
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01; //响应优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00; //响应优先级 1
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure); // 初始化 NVIC
 

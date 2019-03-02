@@ -23,6 +23,18 @@
 #define __TASK_H_
 #include "sys.h"
 
+void delay_Ntimes(int Num);
+void Task_test(void);
+void Task_MoveLeft(void);
+void Task_MovePad(void);
+void Task_MoveMaterials(void);
+void Task_TakeMaterials(void);
+void Task_PlaceMaterials(void);
+void Task_MovePlaceToMaterials(void);
+void Task_MoveFromPlaceToMaterials(void);
+void Task_MoveStartPoint_4X3(void);
+
+
 #endif
 
 /********************************End of File************************************/

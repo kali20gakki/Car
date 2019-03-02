@@ -100,6 +100,10 @@ void OLED_Show_Qcode(void)
                 OLED_ShowCHinese(96, 0, 2);
                 OLED_ShowCHinese(112, 0, 1);
             }
+            default :   // 错误
+            {
+                
+            }
 
         }
 

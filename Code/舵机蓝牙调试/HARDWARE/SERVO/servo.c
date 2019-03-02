@@ -12,11 +12,11 @@
 ** @date    : 2019-02-17
 ** @describe: 舵机底层驱动
 **
-**           *  Servo1 :  TIM1CH1 --> PA8
-**           *  Servo2 :  TIM1CH2 --> PA9
-**           *  Servo3 :  TIM1CH3 --> PA10
-**           *  Servo4 :  TIM1CH4 --> PA11
-**           *  Servo5 :  TIM9CH1 --> PA2
+**           *  Servo1 :  TIM1CH2 --> PA9
+**           *  Servo2 :  TIM1CH1 --> PA8
+**           *  Servo3 :  TIM1CH4 --> PA11
+**           *  Servo4 :  TIM1CH3 --> PA10
+**           *  Servo5 :  TIM9CH1 --> PA2  （free）
 **
 **----------------------------------版本信息------------------------------------
 ** 版本代号: V0.1
@@ -52,16 +52,15 @@ void Servo_Init(u16 arr, u16 psc)
 
     /* 总线使能 */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE); //TIM1 时钟使能
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE); //TIM9 时钟使能
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);//使能 PORTA 时钟
     /*IO 复用*/
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource8,  GPIO_AF_TIM1);
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource9,  GPIO_AF_TIM1);
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_TIM1);
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_TIM1);
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2,  GPIO_AF_TIM9);
+    //GPIO_PinAFConfig(GPIOA, GPIO_PinSource2,  GPIO_AF_TIM9);
     /* IO 初始化 */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11; //PA2 --> PA11
+    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11; //PA2 --> PA11
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF; //复用功能
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //速度 50MHz
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出
@@ -94,15 +93,15 @@ void Servo_Init(u16 arr, u16 psc)
     TIM_OC4Init(TIM1, &TIM_OCInitStructure);
     TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
     /*TIM9CH1*/
-    TIM_OC1Init(TIM9, &TIM_OCInitStructure);
-    TIM_OC1PreloadConfig(TIM9, TIM_OCPreload_Enable);
+//    TIM_OC1Init(TIM9, &TIM_OCInitStructure);
+//    TIM_OC1PreloadConfig(TIM9, TIM_OCPreload_Enable);
 
     /*使能定时器*/
     TIM_Cmd(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
     /*使能定时器PWM输出模式*/
-    TIM_Cmd(TIM9, ENABLE);
-    TIM_CtrlPWMOutputs(TIM9, ENABLE);
+//    TIM_Cmd(TIM9, ENABLE);
+//    TIM_CtrlPWMOutputs(TIM9, ENABLE);
 }
 
 
@@ -122,7 +121,7 @@ void Servo1_SetAngle(int angle)
     int pwm_value;
     if(angle<0||angle>180)return; 
     pwm_value = K * angle + 1500;
-    TIM_SetCompare1(TIM1, pwm_value);
+    TIM_SetCompare2(TIM1, pwm_value);
 }
 
 
@@ -141,7 +140,7 @@ void Servo2_SetAngle(int angle)
     int pwm_value;
     if(angle<0||angle>180)return; 
     pwm_value = K * angle + 1500;
-    TIM_SetCompare2(TIM1, pwm_value);
+    TIM_SetCompare1(TIM1, pwm_value);
 }
 
 
@@ -161,7 +160,7 @@ void Servo3_SetAngle(int angle)
     int pwm_value;
    if(angle<0||angle>180)return; 
     pwm_value = K * angle + 1500;
-    TIM_SetCompare3(TIM1, pwm_value);
+    TIM_SetCompare4(TIM1, pwm_value);
 }
 
 
@@ -180,7 +179,7 @@ void Servo4_SetAngle(int angle)
     int pwm_value;
     if(angle<0||angle>180)return; 
     pwm_value = K * angle + 1500;
-    TIM_SetCompare4(TIM1, pwm_value);
+    TIM_SetCompare3(TIM1, pwm_value);
 }
 
 

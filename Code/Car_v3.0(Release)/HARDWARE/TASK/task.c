@@ -19,7 +19,22 @@
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
 #include "task.h"
+#include "sensor.h"
 
+extern u8 COUNT_FRONT_L;
+extern u8 COUNT_FRONT_R;
+extern u8 COUNT_LEFT_U;
+extern u8 COUNT_RIGHT_U;
+extern u8 COUNT_RIGHT_D;
+
+
+
+
+void delay_Ntimes(int Num)
+{
+    int i;
+    for(i = 0; i < Num; i++)delay_ms(1000);
+}
 
 
 
@@ -35,7 +50,7 @@
 */
 void Task_test(void)
 {
-    
+
 }
 
 
@@ -51,7 +66,11 @@ void Task_test(void)
 */
 void Task_MoveLeft(void)
 {
-
+    while(COUNT_FRONT_L != 2)
+    {
+        Kinematic_Analysis(-20, 0);
+    }
+    Kinematic_Analysis(0, 0);
 }
 
 
@@ -67,11 +86,26 @@ void Task_MoveLeft(void)
 */
 void Task_MovePad(void)
 {
-    
+    COUNT_RIGHT_U = 0;
+    while(COUNT_RIGHT_U < 6)
+    {
+        Car_TrackFront();
+    }
+
+    Kinematic_Analysis(0, 0);
 }
 
 
 void Task_MoveMaterials(void)
+{
+    COUNT_RIGHT_D = 0;
+    while(COUNT_RIGHT_D != 3)Car_TrackBack();
+
+    Kinematic_Analysis(0, 0);
+}
+
+
+void Task_TakeMaterials(void)
 {
     
 }
@@ -83,11 +117,24 @@ void Task_PlaceMaterials(void)
 
 void Task_MovePlaceToMaterials(void)
 {
-    
+    COUNT_LEFT_U = 0;
+    while(COUNT_LEFT_U !=4 )Car_TrackLeft();
+
+    Kinematic_Analysis(0, 0);
 }
 
-void Task_MoveStartPoint(void)
+void Task_MoveFromPlaceToMaterials(void)
 {
+    COUNT_RIGHT_U = 0;
+    while(COUNT_RIGHT_U != 6)Car_TrackRight();
     
+     Kinematic_Analysis(0, 0);
+}
+void Task_MoveStartPoint_4X3(void)
+{
+    Kinematic_Analysis(30, -40);
+
+    delay_Ntimes(24);
+    Kinematic_Analysis(0, 0);
 }
 /********************************End of File************************************/

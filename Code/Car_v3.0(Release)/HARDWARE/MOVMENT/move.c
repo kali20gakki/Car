@@ -154,7 +154,7 @@ void Car_TrackBack(void)
     {
         Kinematic_Analysis(0, -30); // 后退
     }
-    else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 1) // 左偏
+    else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 左偏
     {
         /* 速度差5 */
         Target_A =  30;
@@ -162,7 +162,7 @@ void Car_TrackBack(void)
         Target_C = -35;
         Target_D = -35;
     }
-    else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 右偏
+    else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 1) // 右偏
     {
         /* 速度差5 */
         Target_A =  35;
@@ -188,7 +188,7 @@ void Car_TrackLeft(void)
 {
     if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 0) // 没有偏离
     {
-        Kinematic_Analysis(-25, 0);
+        Kinematic_Analysis(-20, 0);
     }
     else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 0) // 上偏
     {
@@ -224,7 +224,7 @@ void Car_TrackRight(void)
 {
     if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 0) // 没有偏离
     {
-        Kinematic_Analysis(25, 0);
+        Kinematic_Analysis(20, 0);
 
     }
     else if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 1) // 上偏
