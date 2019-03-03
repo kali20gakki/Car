@@ -43,6 +43,7 @@
 #include "ano.h"
 #include "key.h"
 #include "uart5.h"
+#include "action.h"
 #include "task.h"
 
 /********************************全局变量***************************************/
@@ -89,35 +90,25 @@ int main(void)
     OLED_Clear();                                    // OLED复位
 
     /*******************************************************************************/
-    //OLED_ShowString(64, 0, "Test");
 
-    Servo4_SetAngle(90);
-    Servo3_SetAngle(0);
-    Servo2_SetAngle(145);
-    Servo1_SetAngle(90);
+    Action_First();
     delay_Ntimes(1);
     while(1)
     {
-        Task_MoveLeft();
-        delay_ms(500);
-        Task_MovePad();
-        delay_Ntimes(2);
-        Task_MoveMaterials();
-        delay_Ntimes(2);
-        Task_MovePlaceToMaterials();
-        delay_Ntimes(2);
-        Task_MoveFromPlaceToMaterials();
-        delay_Ntimes(2);
-        Task_MovePlaceToMaterials();
-        delay_Ntimes(2);
-        Task_MoveFromPlaceToMaterials();
-        delay_Ntimes(2);
-        Task_MovePlaceToMaterials();
-        delay_Ntimes(2);
-        Task_MoveStartPoint_4X3();
+        if(KEY_Scan(0) == 1)
+        {
+            Task_Test();
+            while(1);
+        }
         
-
-        while(1);
+//        OLED_ShowString(0,0,"LEFT = ");
+//        OLED_ShowNum(50,0,COUNT_FRONT_L);
+//        
+//        OLED_ShowString(0,3,"RIGHT = ");
+//        OLED_ShowNum(60,3,COUNT_FRONT_R);
+//        
+//        OLED_ShowString(0,6,"R_D = ");
+//        OLED_ShowNum(60,6,COUNT_RIGHT_D);
     }
 }
 

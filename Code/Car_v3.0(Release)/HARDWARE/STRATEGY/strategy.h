@@ -23,6 +23,11 @@
 #define __STRATEGY_H_
 #include "sys.h"
 
+
+void Strategy_MaterialColor(void);
+void Strategy_QrcodeSquence(void);
+
+
 #endif
 
 /********************************End of File************************************/

@@ -7,9 +7,9 @@
 **                           Blog: www.mrtutu.cn
 **
 **----------------------------------文件信息------------------------------------
-** @flie    : task.h
+** @flie    : action.c
 ** @auther  : Mrtutu
-** @date    : 2019-02-21
+** @date    : 2019-03-03
 ** @describe: 
 **
 **----------------------------------版本信息------------------------------------
@@ -19,22 +19,25 @@
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
  
-#ifndef __TASK_H_
-#define __TASK_H_
-#include "sys.h"
-
-void delay_Ntimes(int Num);
-void Task_Test(void);
-void Task_MoveLeft(void);
-void Task_MovePad(void);
-void Task_MoveMaterials(void);
-void Task_TakeMaterials(void);
-void Task_PlaceMaterials(void);
-void Task_MovePlaceToMaterials(void);
-void Task_MoveFromPlaceToMaterials(void);
-void Task_MoveStartPoint_4X3(void);
+#include "action.h"
+#include "servo.h"
 
 
-#endif
-
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Action_First
+* @param : None
+* @return: None
+* @note  : None  舵机上电后初始动作
+*
+*/
+void Action_First(void)
+{
+    Servo4_SetAngle(90);
+    Servo3_SetAngle(0);
+    Servo2_SetAngle(145);
+    Servo1_SetAngle(90);
+}
 /********************************End of File************************************/

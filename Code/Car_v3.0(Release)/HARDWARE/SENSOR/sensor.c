@@ -1,4 +1,4 @@
-/********************************Copyright (c)**********************************\
+﻿/********************************Copyright (c)**********************************\
 **
 **                   (c) Copyright 2019, Main, China, Mrtutu.
 **                           All Rights Reserved
@@ -45,7 +45,7 @@ extern u8 COUNT_RIGHT_D;
 * @func  : Sensor_Track_Init
 * @param : None
 * @return: None
-* @note  : 红外寻迹传感器初始化   --- 用来寻迹不开外部中断
+* @note  : 红外寻迹传感器初始化   
 *
 */
 void Sensor_Track_Init(void)
@@ -76,40 +76,73 @@ void Sensor_Track_Init(void)
     
     
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);//使能 SYSCFG 时钟
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource3); //PA3  连接线 3
+    
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource0); //PC0  连接线 0
     SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource3); //PC3  连接线 3
     SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource13);//PC13 连接线 13
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource15);//PC15 连接线 15
-    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOE, EXTI_PinSource6 );//PE6  连接线 6
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource5); //PA5 连接线 5
     
     /* 配置 中断线 */
-    EXTI_InitStructure.EXTI_Line =  EXTI_Line3| EXTI_Line6| EXTI_Line13| EXTI_Line15;
+    EXTI_InitStructure.EXTI_Line =  EXTI_Line0|EXTI_Line3|EXTI_Line5| EXTI_Line13;
     EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;//中断事件
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //上升沿触发
+    //EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising; //上升沿触发
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //下升沿触发
     EXTI_InitStructure.EXTI_LineCmd = ENABLE;//使能 LINE11
     EXTI_Init(&EXTI_InitStructure);
     
-    /* 中断初始化 LINE3 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI3_IRQn; //外部中断 0
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级 1
+    /* 中断初始化 LINE0 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI0_IRQn; //外部中断 0
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;//响应优先级 2
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC
     
-    /* 中断初始化 LINE6 */
-    NVIC_InitStructure.NVIC_IRQChannel =  EXTI9_5_IRQn; //外部中断 0
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级 1
+    /* 中断初始化 LINE3 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI3_IRQn; //外部中断 0
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
+    NVIC_Init(&NVIC_InitStructure);//配置 NVIC
+   
+    
+    /* 中断初始化 LINE6  5 */
+    NVIC_InitStructure.NVIC_IRQChannel =  EXTI9_5_IRQn; //外部中断 0
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;//响应优先级 2
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC
     
     /* 中断初始化 LINE13 15 */
     NVIC_InitStructure.NVIC_IRQChannel =  EXTI15_10_IRQn; //外部中断 0
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00;//抢占优先级 1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x04;//响应优先级 2
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC
 }
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : EXTI0_IRQHandler
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void EXTI0_IRQHandler(void)
+{
+    delay_ms(5);      //适当延时防止毛刺干扰    
+     /* LINE0中断判断 --- Right Down*/
+    if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+    {
+        /* 中断逻辑 */
+        if(SNESOR_RIGHT_D == 0)COUNT_RIGHT_D++;
+        EXTI_ClearITPendingBit(EXTI_Line0); //清除 LINE 上的中断标志位
+    }
+}
+
 
 /*
 * @auther: Mrtutu
@@ -123,12 +156,11 @@ void Sensor_Track_Init(void)
 */
 void EXTI3_IRQHandler(void)
 {
-    delay_ms(10);      //适当延时防止毛刺干扰
+    delay_ms(5);      //适当延时防止毛刺干扰
     
     /* LINE3 FRONT_L  FRONT_R */
     if(EXTI_GetITStatus(EXTI_Line3) != RESET)
     {
-        if(SENSOR_FRONT_L == 0)COUNT_FRONT_L++;
         if(SENSOR_FRONT_R == 0)COUNT_FRONT_R++;
         EXTI_ClearITPendingBit(EXTI_Line3); //清除 LINE 上的中断标志位
     }
@@ -136,16 +168,27 @@ void EXTI3_IRQHandler(void)
 
 
 
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : EXTI9_5_IRQHandler
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
 void EXTI9_5_IRQHandler(void)
 {
-    delay_ms(10);      //适当延时防止毛刺干扰
+    delay_ms(5);      //适当延时防止毛刺干扰
     
-    /* LINE6 LEFT_U */
-    if(EXTI_GetITStatus(EXTI_Line6) != RESET)
+     /* LINE5 */
+    if(EXTI_GetITStatus(EXTI_Line5) != RESET)
     {
-        if(SENSOR_LEFT_U == 0)COUNT_LEFT_U++;
-        EXTI_ClearITPendingBit(EXTI_Line6); //清除 LINE 上的中断标志位
+        if(SENSOR_FRONT_L == 0)COUNT_FRONT_L++;
+        EXTI_ClearITPendingBit(EXTI_Line5); //清除 LINE 上的中断标志位
     }
+    
 }
 
 /*
@@ -162,7 +205,7 @@ void EXTI9_5_IRQHandler(void)
 */
 void EXTI15_10_IRQHandler(void)
 {
-    delay_ms(10);      //适当延时防止毛刺干扰
+    delay_ms(5);      //适当延时防止毛刺干扰
     
     /* LINE13中断判断 --- Right UP*/
     if(EXTI_GetITStatus(EXTI_Line13) != RESET)
@@ -172,12 +215,5 @@ void EXTI15_10_IRQHandler(void)
         EXTI_ClearITPendingBit(EXTI_Line13); //清除 LINE 上的中断标志位
     }
     
-    /* LINE15中断判断 --- Right Down*/
-    if(EXTI_GetITStatus(EXTI_Line15) != RESET)
-    {
-        /* 中断逻辑 */
-        if(SNESOR_RIGHT_D == 0)COUNT_RIGHT_D++;
-        EXTI_ClearITPendingBit(EXTI_Line15); //清除 LINE 上的中断标志位
-    }
 }
 /********************************End of File************************************/

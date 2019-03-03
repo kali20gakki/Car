@@ -116,23 +116,23 @@ void Car_TrackFront(void)
 {
     if((SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0)) //没有偏离
     {
-        Kinematic_Analysis(0, 45); // 直走
+        Kinematic_Analysis(0, 40); // 直走
     }
     else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 1) // 左偏
     {
         /* 速度差5 */
-        Target_A = -45;
-        Target_B = -45;
-        Target_C =  40;
-        Target_D =  40;
+        Target_A = -40;
+        Target_B = -40;
+        Target_C =  35;
+        Target_D =  35;
 
     }
     else if(SENSOR_FRONT_L == 1 && SENSOR_FRONT_R == 0) // 右偏
     {
-        Target_A = -40;
-        Target_B = -40;
-        Target_C =  45;
-        Target_D =  45;
+        Target_A = -35;
+        Target_B = -35;
+        Target_C =  40;
+        Target_D =  40;
     }
 }
 

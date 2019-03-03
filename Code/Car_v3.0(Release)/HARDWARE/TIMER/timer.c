@@ -62,7 +62,7 @@ void TIM7_Int_Init(u16 arr, u16 psc)
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn; //定时器 7 中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级 0
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00; //响应优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02; //响应优先级 1
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure); // 初始化 NVIC
 

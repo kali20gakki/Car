@@ -48,9 +48,25 @@ void delay_Ntimes(int Num)
 * @note  : Test 任务
 *
 */
-void Task_test(void)
+void Task_Test(void)
 {
-
+    Task_MoveLeft();
+    delay_ms(100);
+    Task_MovePad();
+    delay_Ntimes(2);
+    Task_MoveMaterials();
+    delay_Ntimes(2);
+    Task_MovePlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MoveFromPlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MovePlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MoveFromPlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MovePlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MoveStartPoint_4X3();
 }
 
 
@@ -66,6 +82,7 @@ void Task_test(void)
 */
 void Task_MoveLeft(void)
 {
+    COUNT_FRONT_L = 0;
     while(COUNT_FRONT_L != 2)
     {
         Kinematic_Analysis(-20, 0);
@@ -87,7 +104,7 @@ void Task_MoveLeft(void)
 void Task_MovePad(void)
 {
     COUNT_RIGHT_U = 0;
-    while(COUNT_RIGHT_U < 6)
+    while(COUNT_RIGHT_U != 6)
     {
         Car_TrackFront();
     }
@@ -96,6 +113,16 @@ void Task_MovePad(void)
 }
 
 
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_MoveMaterials
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
 void Task_MoveMaterials(void)
 {
     COUNT_RIGHT_D = 0;
@@ -105,34 +132,94 @@ void Task_MoveMaterials(void)
 }
 
 
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_TakeMaterials
+* @param : None
+* @return: None
+* @note  : None 提取物料
+*
+*/
 void Task_TakeMaterials(void)
 {
-    
+
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_PlaceMaterials
+* @param : None
+* @return: None
+* @note  : None  放置物料
+*
+*/
 void Task_PlaceMaterials(void)
 {
-    
+
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_MovePlaceToMaterials
+* @param : None
+* @return: None
+* @note  : None  平移到放置区
+*
+*/
 void Task_MovePlaceToMaterials(void)
 {
-    COUNT_LEFT_U = 0;
-    while(COUNT_LEFT_U !=4 )Car_TrackLeft();
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R != 4)Car_TrackLeft();
 
     Kinematic_Analysis(0, 0);
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_MoveFromPlaceToMaterials
+* @param : None
+* @return: None
+* @note  : None   从放置区平移到提取区
+*
+*/
 void Task_MoveFromPlaceToMaterials(void)
 {
-    COUNT_RIGHT_U = 0;
-    while(COUNT_RIGHT_U != 6)Car_TrackRight();
-    
-     Kinematic_Analysis(0, 0);
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R != 4)Car_TrackRight();
+
+    Kinematic_Analysis(0, 0);
 }
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-03
+*
+* @func  : Task_MoveStartPoint_4X3
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
 void Task_MoveStartPoint_4X3(void)
 {
-    Kinematic_Analysis(30, -40);
+    Kinematic_Analysis(28, -50);
 
     delay_Ntimes(24);
     Kinematic_Analysis(0, 0);

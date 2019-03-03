@@ -24,17 +24,17 @@
 #include "sys.h"
 
 /* 前 */
-#define SENSOR_FRONT_L             PAin(3)   //PA3
+#define SENSOR_FRONT_L             PAin(5)  //PC13
 #define SENSOR_FRONT_R             PCin(3)   //PC3
 /* 后 */
-#define SENSOR_BACK_L              PAin(5)   //PA5
+#define SENSOR_BACK_L              PAin(3)   //PA3
 #define SENSOR_BACK_R              PCin(1)   //PC1
 /* 左 */
 #define SENSOR_LEFT_U              PEin(6)   //PE6
-#define SENSOR_LEFT_D              PCin(0)   //PC0
+#define SENSOR_LEFT_D              PCin(15)   //PC15
 /* 右 */
-#define SNESOR_RIGHT_U             PCin(13)  //PC13
-#define SNESOR_RIGHT_D             PCin(15)   //PC15
+#define SNESOR_RIGHT_U             PCin(13)   //PA3
+#define SNESOR_RIGHT_D             PCin(0)    //PC0
 
 
 #endif

@@ -27,6 +27,9 @@
 #define KEY2 GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_2)
 #define KEY3 GPIO_ReadInputDataBit(GPIOE,GPIO_Pin_4)
 
+
+u8 KEY_Scan(u8 mode);
+
 #endif
 
 /********************************End of File************************************/

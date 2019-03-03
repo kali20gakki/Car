@@ -129,7 +129,7 @@ int Incremental_PI_MotorA(int Encoder, int Target)
     Last_bias = Bias;	                        //保存上一次偏差
 
     if(Pwm > 1000)Pwm = 1000;                   //限幅
-    if(Pwm < -1000)Pwm = -1000;
+    else if(Pwm < -1000)Pwm = -1000;
 
     return Pwm;                                 //增量输出
 }
@@ -154,7 +154,7 @@ int Incremental_PI_MotorB(int Encoder, int Target)
     Last_bias = Bias;	                        //保存上一次偏差
 
     if(Pwm > 1000)Pwm = 1000;                   //限幅
-    if(Pwm < -1000)Pwm = -1000;
+    else if(Pwm < -1000)Pwm = -1000;
 
     return Pwm;                                 //增量输出
 }
@@ -180,7 +180,7 @@ int Incremental_PI_MotorC(int Encoder, int Target)
     Last_bias = Bias;	                        //保存上一次偏差
 
     if(Pwm > 1000)Pwm = 1000;                   //限幅
-    if(Pwm < -1000)Pwm = -1000;
+    else if(Pwm < -1000)Pwm = -1000;
 
     return Pwm;                                 //增量输出
 }
@@ -205,7 +205,7 @@ int Incremental_PI_MotorD(int Encoder, int Target)
     Last_bias = Bias;	                        //保存上一次偏差
 
     if(Pwm > 1000)Pwm = 1000;                   //限幅
-    if(Pwm < -1000)Pwm = -1000;
+    else if(Pwm < -1000)Pwm = -1000;
 
     return Pwm;                                 //增量输出
 }
