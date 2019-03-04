@@ -24,7 +24,7 @@
 #include "sys.h"
 
 /* 前 */
-#define SENSOR_FRONT_L             PAin(5)  //PC13
+#define SENSOR_FRONT_L             PAin(5)   //PA5
 #define SENSOR_FRONT_R             PCin(3)   //PC3
 /* 后 */
 #define SENSOR_BACK_L              PAin(3)   //PA3

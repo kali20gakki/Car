@@ -2,14 +2,14 @@ import sensor, image, time, pyb
 from pyb import UART
 
 # 红绿蓝 阈值 要根据实际颜色调试
-red_threshold = (35, 76, 28, 127, -128, 127)
-green_threshold = (68, 94, -128, -20, -67, 83)
-blue_threshold = (36, 14, 31, -128, -15, -128)
+red_threshold = (93, 24, 98, 29, -54, 90)
+green_threshold = (18, 72, -21, -65, 47, 1)
+blue_threshold = (5, 67, 76, -101, -27, -128)
 
 # RGB 阈值的组合
-thresholds = [(35, 76, 28, 127, -128, 127),
-              (68, 94, -128, -20, -67, 83),
-             (36, 14, 31, -128, -15, -128)]
+thresholds = [(93, 24, 98, 29, -54, 90),
+              (18, 72, -21, -65, 47, 1),
+             (5, 67, 76, -101, -27, -128)]
 
 
 # R G B x轴横坐标 用于排序
@@ -33,7 +33,7 @@ clock = time.clock()
 # 二维码识别
 def qrcode_recognition():
     for code in img.find_qrcodes():
-        #img.draw_rectangle(code.rect(), color = (255, 0, 0)) # 脱机时注释提高性能
+        img.draw_rectangle(code.rect(), color = (255, 0, 0)) # 脱机时注释提高性能
         if(code[4]):
             uart.write(code[4]+"\r\n")
             led_flash()
@@ -101,7 +101,7 @@ def color_sort():
     list2str = "".join(sorted_value_list) #转换为字符串
     print(list2str)
     print("\r\n")
-    #print(color_dist)
+    print(color_dist)
     uart.write(list2str+"\r\n")
     #led_flash()
 
@@ -117,7 +117,7 @@ def led_flash():
 def find_colorBlobs():
     img = sensor.snapshot()
     img.lens_corr(strength = 1.8, zoom = 1.0) # 畸变校正
-    for blob in img.find_blobs(thresholds, pixels_threshold=100, area_threshold=100, merge=True):
+    for blob in img.find_blobs(thresholds, pixels_threshold=400, area_threshold=100, merge=True):
         if blob.code() == 7: # r/g/b code
             color_sort()
         else:
@@ -128,9 +128,6 @@ def find_colorBlobs():
 
 while(True):
     clock.tick()
-    if 1 :
-        find_colorBlobs()
-    else:
-        find_redBlob()
-        find_blueBlob()
-        find_greenBlob()
+    img = sensor.snapshot()
+    img.lens_corr(1.0) # strength of 1.8 is good for the 2.8mm lens.
+    qrcode_recognition()
