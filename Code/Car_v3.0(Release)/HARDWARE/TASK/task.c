@@ -56,6 +56,8 @@ void Task_Test(void)
     delay_Ntimes(2);
     Task_MoveMaterials();
     delay_Ntimes(2);
+//    Task_MoveBackward();
+//    delay_Ntimes(2);
     Task_MovePlaceToMaterials();
     delay_Ntimes(2);
     Task_MoveFromPlaceToMaterials();
@@ -131,6 +133,25 @@ void Task_MoveMaterials(void)
     Kinematic_Analysis(0, 0);
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-04
+*
+* @func  : Task_MoveBackward
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_MoveBackward(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R != 2)Kinematic_Analysis(-20, 0);
+    
+    Kinematic_Analysis(0, 0);
+}
 
 
 /*
@@ -214,14 +235,14 @@ void Task_MoveFromPlaceToMaterials(void)
 * @func  : Task_MoveStartPoint_4X3
 * @param : None
 * @return: None
-* @note  : None
+* @note  : None   -20 / 11
 *
 */
 void Task_MoveStartPoint_4X3(void)
 {
-    Kinematic_Analysis(28, -50);
+    Kinematic_Analysis(24, -40);
 
-    delay_Ntimes(24);
+    delay_Ntimes(19);
     Kinematic_Analysis(0, 0);
 }
 /********************************End of File************************************/

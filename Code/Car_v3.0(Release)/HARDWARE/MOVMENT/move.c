@@ -152,7 +152,7 @@ void Car_TrackBack(void)
 {
     if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 0) // 没有偏离
     {
-        Kinematic_Analysis(0, -30); // 后退
+        Kinematic_Analysis(0, -20); // 后退
     }
     else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 左偏
     {

@@ -100,15 +100,18 @@ int main(void)
             Task_Test();
             while(1);
         }
-        
-//        OLED_ShowString(0,0,"LEFT = ");
+
+//        OLED_ShowString(0,0,"F_L = ");
 //        OLED_ShowNum(50,0,COUNT_FRONT_L);
 //        
-//        OLED_ShowString(0,3,"RIGHT = ");
-//        OLED_ShowNum(60,3,COUNT_FRONT_R);
+//        OLED_ShowString(0,2,"F_R = ");
+//        OLED_ShowNum(50,2,COUNT_FRONT_R);
+//        
+//        OLED_ShowString(0,4,"R_U = ");
+//        OLED_ShowNum(50,4,COUNT_RIGHT_U);
 //        
 //        OLED_ShowString(0,6,"R_D = ");
-//        OLED_ShowNum(60,6,COUNT_RIGHT_D);
+//        OLED_ShowNum(50,6,COUNT_RIGHT_D);
     }
 }
 

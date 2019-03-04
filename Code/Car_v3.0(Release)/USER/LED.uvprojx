@@ -439,14 +439,14 @@
               <FilePath>..\HARDWARE\MESSAGE\message.c</FilePath>
             </File>
             <File>
-              <FileName>control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\CONTROL\control.c</FilePath>
-            </File>
-            <File>
               <FileName>sensor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\SENSOR\sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\CONTROL\control.c</FilePath>
             </File>
             <File>
               <FileName>move.c</FileName>

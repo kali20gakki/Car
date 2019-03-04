@@ -1,4 +1,4 @@
-﻿/********************************Copyright (c)**********************************\
+/********************************Copyright (c)**********************************\
 **
 **                   (c) Copyright 2019, Main, China, Mrtutu.
 **                           All Rights Reserved
@@ -108,7 +108,7 @@ void Sensor_Track_Init(void)
     /* 中断初始化 LINE6  5 */
     NVIC_InitStructure.NVIC_IRQChannel =  EXTI9_5_IRQn; //外部中断 0
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;//抢占优先级 1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;//响应优先级 2
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;//响应优先级 2
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//使能外部中断通道
     NVIC_Init(&NVIC_InitStructure);//配置 NVIC
     

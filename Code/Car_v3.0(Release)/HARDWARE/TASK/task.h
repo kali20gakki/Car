@@ -27,6 +27,7 @@ void delay_Ntimes(int Num);
 void Task_Test(void);
 void Task_MoveLeft(void);
 void Task_MovePad(void);
+void Task_MoveBackward(void);
 void Task_MoveMaterials(void);
 void Task_TakeMaterials(void);
 void Task_PlaceMaterials(void);
