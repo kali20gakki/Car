@@ -22,9 +22,13 @@
 ** 芯片说明：STM32F407VET6   Flash：512Kb  RAM：192Kb
 **
 **           中断优先级：       抢占优先级         响应优先级
-**              TIM7                 0                  1
+**              TIM7                 0                  2
 **             USART3                1                  1
 **             UART5                 2                  1
+**          SENSOR_FRONT_L
+**          SENSOR_FRONT_R
+**          SENSOR_LEFT_U
+**          SENSOR_LEFT_D
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
 
@@ -51,6 +55,7 @@ volatile int Motor_A, Motor_B, Motor_C, Motor_D;      // PI算法返回赋值 �
 volatile int Encoder_A, Encoder_B, Encoder_C, Encoder_D; // 编码器返回赋值
 volatile int Target_A, Target_B, Target_C, Target_D;  // 目标速度
 
+u8 key;
 
 /* 计数器 */
 volatile u8 COUNT_FRONT_L;
@@ -74,6 +79,7 @@ int main(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	 // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级
     usart3_Init(9600);                               // OpenMV
     uart5_Init(9600);                                // 串口5
+    TIM9_Int_Init(100 - 1, 8400 - 1);	             // 10ms中断一次
     Servo_Init(10000 - 1, 56 - 1);                   // 舵机PWM频率为300Hz
     TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms
     Motor_Init(1000 - 1, 42 - 1);                    // 电机PWM频率为2KHz
@@ -87,31 +93,28 @@ int main(void)
     Beep_Init();                                     // 蜂鸣器初始化
     IIC_Init();                                      // OLED IIC初始化
     OLED_Init();                                     // OLED初始化
-    OLED_Clear();                                    // OLED复位
 
     /*******************************************************************************/
 
     Action_First();
-    delay_Ntimes(1);
+    Task_OLED();
     while(1)
     {
-        if(KEY_Scan(0) == 1)
-        {
-            Task_Test();
-            while(1);
-        }
+//        key = KEY_Scan(0);
+//        if(key == 1)
+//        {
+//            Task_TestPath();
+//            while(1);
+//        }
+//        else if(key == 2)
+//        {
+//            Task_TestSensor();
+//        }
+//        else if(key == 3)
+//        {
+//            Strategy_QrcodeSquence();
+//        }
 
-//        OLED_ShowString(0,0,"F_L = ");
-//        OLED_ShowNum(50,0,COUNT_FRONT_L);
-//        
-//        OLED_ShowString(0,2,"F_R = ");
-//        OLED_ShowNum(50,2,COUNT_FRONT_R);
-//        
-//        OLED_ShowString(0,4,"R_U = ");
-//        OLED_ShowNum(50,4,COUNT_RIGHT_U);
-//        
-//        OLED_ShowString(0,6,"R_D = ");
-//        OLED_ShowNum(50,6,COUNT_RIGHT_D);
     }
 }
 

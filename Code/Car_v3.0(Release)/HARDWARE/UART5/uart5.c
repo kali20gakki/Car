@@ -32,6 +32,51 @@ u16 UART5_RX_STA = 0; //接收状态标记
 
 
 
+//定时器7中断服务程序		    
+void TIM1_BRK_TIM9_IRQHandler(void)
+{ 	
+	if(TIM9->SR&0X0001)//是更新中断
+	{	 			   
+		UART5_RX_STA|=1<<15;	//标记接收完成
+		TIM_ClearITPendingBit(TIM9, TIM_IT_Update  );  //清除TIM6更新中断标志    
+		TIM_Cmd(TIM9, DISABLE);  //关闭TIM6
+	}	    
+}
+ 
+//通用定时器中断初始化
+//这里始终选择为APB1的2倍，而APB1为36M
+//arr：自动重装值。
+//psc：时钟预分频数		 
+void TIM9_Int_Init(u16 arr,u16 psc)
+{	
+	NVIC_InitTypeDef NVIC_InitStructure;
+	TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE); //TIM9 时钟使能
+	
+	//定时器TIM7初始化
+	TIM_TimeBaseStructure.TIM_Period = arr; //设置在下一个更新事件装入活动的自动重装载寄存器周期的值	
+	TIM_TimeBaseStructure.TIM_Prescaler =psc; //设置用来作为TIMx时钟频率除数的预分频值
+	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1; //设置时钟分割:TDTS = Tck_tim
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //TIM向上计数模式
+	TIM_TimeBaseInit(TIM9, &TIM_TimeBaseStructure); //根据指定的参数初始化TIMx的时间基数单位
+ 
+	TIM_ITConfig(TIM9,TIM_IT_Update,ENABLE ); //使能指定的TIM6中断,允许更新中断
+   
+	TIM_Cmd(TIM9,ENABLE);//使能定时器6
+	
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_BRK_TIM9_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//抢占优先级0
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//子优先级1
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器
+	
+}
+	 
+
+
+
+
 /*
 * @auther: Mrtutu
 * @date  ：2019-02-17
@@ -145,27 +190,23 @@ void uart5_send_string(u8* str)
 */
 void UART5_IRQHandler(void)
 {
-    u8 Res;
-    /*接收中断 必须以0x0d 0x0a结尾*/
+    u8 res;
     if(USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)
     {
-        Res = USART_ReceiveData(UART5); //(UART5->DR) 读取接收到的数据
-        if((UART5_RX_STA & 0x8000) == 0) //接收未完成
+
+        res = USART_ReceiveData(UART5);
+        if((UART5_RX_STA & (1 << 15)) == 0) //接收完的一批数据,还没有被处理,则不再接收其他数据
         {
-            if(UART5_RX_STA & 0x4000) //接收到了0x0d
+            if(UART5_RX_STA < UART5_MAX_RECV_LEN)		//还可以接收数据
             {
-                if(Res != 0x0a)UART5_RX_STA = 0; //接收错误,重新开始
-                else UART5_RX_STA |= 0x8000; //接收完成了
+                TIM_SetCounter(TIM9, 0); //计数器清空
+                if(UART5_RX_STA == 0)
+                    TIM_Cmd(TIM9, ENABLE);  //使能定时器6
+                UART5_RX_BUF[UART5_RX_STA++] = res;		//记录接收到的值
             }
             else
             {
-                if(Res == 0x0d)UART5_RX_STA |= 0x4000;
-                else
-                {
-                    UART5_RX_BUF[UART5_RX_STA & 0X3FFF] = Res ;
-                    UART5_RX_STA++;
-                    if(UART5_RX_STA > (UART5_MAX_RECV_LEN - 1))UART5_RX_STA = 0; //接收数据错误,重新开始接收
-                }
+                UART5_RX_STA |= 1 << 15;					//强制标记接收完成
             }
         }
     }

@@ -31,11 +31,10 @@ void Servo3_SetAngle(int angle);
 void Servo4_SetAngle(int angle);
 void Servo5_SetAngle(int angle);
 
-//void Servo1_SpeedRegulation(int next_angle);
-//void Servo2_SpeedRegulation(int next_angle);
-//void Servo3_SpeedRegulation(int next_angle);
-//void Servo4_SpeedRegulation(int next_angle);
-//void Servo5_SpeedRegulation(int next_angle);
+void Servo1_SpeedRegulation(int next_angle, u8 time);
+void Servo2_SpeedRegulation(int next_angle, u8 time);
+void Servo3_SpeedRegulation(int next_angle, u8 time);
+void Servo4_SpeedRegulation(int next_angle, u8 time);
 
 #endif
 

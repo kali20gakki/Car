@@ -20,6 +20,10 @@
 \********************************End of Head************************************/
 #include "task.h"
 #include "sensor.h"
+#include "oled.h"
+#include "action.h"
+
+
 
 extern u8 COUNT_FRONT_L;
 extern u8 COUNT_FRONT_R;
@@ -30,12 +34,73 @@ extern u8 COUNT_RIGHT_D;
 
 
 
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : delay_Ntimes
+* @param : Num: [输入/出]
+* @return: None
+* @note  : None   延时次数
+*
+*/
 void delay_Ntimes(int Num)
 {
     int i;
     for(i = 0; i < Num; i++)delay_ms(1000);
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Task_Full
+* @param : None
+* @return: None
+* @note  : None  完整任务
+*
+*/
+void Task_Full(void)
+{
+
+}
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Task_TestSensor
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_TestSensor(void)
+{
+    OLED_Clear();   // OLED复位
+
+    while(1)
+    {
+        OLED_ShowString(0, 0, "F_L = ");
+        OLED_ShowNum(50, 0, COUNT_FRONT_L);
+        OLED_ShowNum(80, 0, SENSOR_FRONT_L);
+
+        OLED_ShowString(0, 2, "F_R = ");
+        OLED_ShowNum(50, 2, SENSOR_FRONT_R);
+        OLED_ShowNum(80, 2, SENSOR_FRONT_R);
+
+        OLED_ShowString(0, 4, "R_U = ");
+        OLED_ShowNum(50, 4, COUNT_RIGHT_U);
+        OLED_ShowNum(80, 4, SNESOR_RIGHT_U);
+
+        OLED_ShowString(0, 6, "R_D = ");
+        OLED_ShowNum(50, 6, COUNT_RIGHT_D);
+        OLED_ShowNum(80, 6, SNESOR_RIGHT_D);
+    }
+}
 
 
 /*
@@ -48,7 +113,7 @@ void delay_Ntimes(int Num)
 * @note  : Test 任务
 *
 */
-void Task_Test(void)
+void Task_TestPath(void)
 {
     Task_MoveLeft();
     delay_ms(100);
@@ -90,6 +155,23 @@ void Task_MoveLeft(void)
         Kinematic_Analysis(-20, 0);
     }
     Kinematic_Analysis(0, 0);
+}
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Task_MoveIncline
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_MoveIncline(void)
+{
+
 }
 
 
@@ -149,7 +231,7 @@ void Task_MoveBackward(void)
 {
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R != 2)Kinematic_Analysis(-20, 0);
-    
+
     Kinematic_Analysis(0, 0);
 }
 
@@ -244,5 +326,27 @@ void Task_MoveStartPoint_4X3(void)
 
     delay_Ntimes(19);
     Kinematic_Analysis(0, 0);
+}
+
+
+
+
+void Task_OLED(void)
+{
+    OLED_Clear();   // OLED复位
+
+    /* 物料顺序 */
+    OLED_ShowCHinese(0, 3, 7);
+    OLED_ShowCHinese(16, 3, 8);
+    OLED_ShowCHinese(32, 3, 9);
+    OLED_ShowCHinese(48, 3, 10);
+    OLED_ShowString(64, 3, ":");
+
+    /* 识别二维码 */
+    OLED_ShowCHinese(0, 0, 0);
+    OLED_ShowCHinese(16, 0, 4);
+    OLED_ShowCHinese(32, 0, 5);
+    OLED_ShowCHinese(48, 0, 6);
+    OLED_ShowString(64, 0, ":");
 }
 /********************************End of File************************************/

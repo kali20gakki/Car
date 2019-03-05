@@ -30,6 +30,7 @@ extern u8 UART5_RX_BUF[UART5_MAX_RECV_LEN];
 extern u8 UART5_TX_BUF[UART5_MAX_SEND_LEN];
 extern u16 UART5_RX_STA;
 
+void TIM6_Int_Init(u16 arr,u16 psc);
 void uart5_Init(u32 bound);
 void uart5_send_char(u8 c);
 void uart5_send_string(u8* str);

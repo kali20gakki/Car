@@ -27,9 +27,16 @@
 
 #include "servo.h"
 #include "delay.h"
+#include "math.h"
 
+const float K = 33.333333f;  // PWM公式系数
 
-const float K = 33.333333f;  // PWM公式系数  
+static int servo1_last_angle = 0;
+static int servo2_last_angle = 0;
+static int servo3_last_angle = 0;
+static int servo4_last_angle = 0;
+static int servo5_last_angle = 0;
+
 
 /*
 * @auther: Mrtutu
@@ -120,7 +127,7 @@ void Servo_Init(u16 arr, u16 psc)
 void Servo1_SetAngle(int angle)
 {
     int pwm_value;
-    if(angle<0||angle>180)return; 
+    if(angle < 0 || angle > 180)return;
     pwm_value = K * angle + 1500;
     TIM_SetCompare2(TIM1, pwm_value);
 }
@@ -139,7 +146,7 @@ void Servo1_SetAngle(int angle)
 void Servo2_SetAngle(int angle)
 {
     int pwm_value;
-    if(angle<0||angle>180)return;
+    if(angle < 0 || angle > 180)return;
     pwm_value = K * angle + 1500;
     TIM_SetCompare1(TIM1, pwm_value);
 }
@@ -159,7 +166,7 @@ void Servo2_SetAngle(int angle)
 void Servo3_SetAngle(int angle)
 {
     int pwm_value;
-    if(angle<0||angle>180)return;
+    if(angle < 0 || angle > 180)return;
     pwm_value = K * angle + 1500;
     TIM_SetCompare4(TIM1, pwm_value);
 }
@@ -178,36 +185,158 @@ void Servo3_SetAngle(int angle)
 void Servo4_SetAngle(int angle)
 {
     int pwm_value;
-    if(angle<0||angle>180)return;
+    if(angle < 0 || angle > 180)return;
     pwm_value = K * angle + 1500;
     TIM_SetCompare3(TIM1, pwm_value);
 }
 
 
 
-
-
-
-void Servo1_SlowOpen()
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Servo1_SpeedRegulation
+* @param : next_angle: [输入/出]
+**			 time: [输入/出]
+* @return: None
+* @note  : None
+*
+*/
+void Servo1_SpeedRegulation(int next_angle, u8 time)
 {
+    int N;
     int i;
-    for(i=0;i<60;i++)
+    N  = abs(next_angle - servo1_last_angle);
+    if(servo1_last_angle < next_angle)
     {
-        Servo1_SetAngle(i);
-        delay_ms(20);
+        for(i = 0; i < N; i++)
+        {
+            servo1_last_angle += 1;
+            Servo1_SetAngle(servo1_last_angle);
+            delay_ms(time);
+        }
+    }
+    if(servo1_last_angle > next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo1_last_angle -= 1;
+            Servo1_SetAngle(servo1_last_angle);
+            delay_ms(time);
+        }
     }
 }
 
 
-void Servo1_SlowClose()
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Servo2_SpeedRegulation
+* @param : next_angle: [输入/出]
+* @return: None
+* @note  : None
+*
+*/
+void Servo2_SpeedRegulation(int next_angle, u8 time)
 {
+    int N;
     int i;
-    int temp = 60;
-    for(i=0;i<60;i++)
+    N  = abs(next_angle - servo2_last_angle);
+    if(servo2_last_angle < next_angle)
     {
-        temp = temp - i;
-        Servo1_SetAngle(temp);
-        delay_ms(20);
+        for(i = 0; i < N; i++)
+        {
+            servo2_last_angle += 1;
+            Servo2_SetAngle(servo2_last_angle);
+            delay_ms(time);
+        }
+    }
+    if(servo2_last_angle > next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo2_last_angle -= 1;
+            Servo2_SetAngle(servo2_last_angle);
+            delay_ms(time);
+        }
+    }
+}
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Servo3_SpeedRegulation
+* @param : next_angle: [输入/出]
+* @return: None
+* @note  : None
+*
+*/
+void Servo3_SpeedRegulation(int next_angle, u8 time)
+{
+    int N;
+    int i;
+    N  = abs(next_angle - servo3_last_angle);
+    if(servo3_last_angle < next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo3_last_angle += 1;
+            Servo3_SetAngle(servo3_last_angle);
+            delay_ms(time);
+        }
+    }
+    if(servo3_last_angle > next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo3_last_angle -= 1;
+            Servo3_SetAngle(servo3_last_angle);
+            delay_ms(time);
+        }
+    }
+}
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-05
+*
+* @func  : Servo4_SpeedRegulation
+* @param : next_angle: [输入/出]
+**			 time: [输入/出]
+* @return: None
+* @note  : None
+*
+*/
+void Servo4_SpeedRegulation(int next_angle, u8 time)
+{
+    int N;
+    int i;
+    N  = abs(next_angle - servo4_last_angle);
+    if(servo4_last_angle < next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo4_last_angle += 1;
+            Servo4_SetAngle(servo4_last_angle);
+            delay_ms(time);
+        }
+    }
+    if(servo4_last_angle > next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo4_last_angle -= 1;
+            Servo4_SetAngle(servo4_last_angle);
+            delay_ms(time);
+        }
     }
 }
 

@@ -24,7 +24,9 @@
 #include "sys.h"
 
 void delay_Ntimes(int Num);
-void Task_Test(void);
+void Task_Full(void);
+void Task_TestSensor(void);
+void Task_TestPath(void);
 void Task_MoveLeft(void);
 void Task_MovePad(void);
 void Task_MoveBackward(void);
@@ -34,7 +36,7 @@ void Task_PlaceMaterials(void);
 void Task_MovePlaceToMaterials(void);
 void Task_MoveFromPlaceToMaterials(void);
 void Task_MoveStartPoint_4X3(void);
-
+void Task_OLED(void);
 
 #endif
 

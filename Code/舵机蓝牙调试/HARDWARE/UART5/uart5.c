@@ -161,7 +161,7 @@ void UART5_IRQHandler(void)
                 UART5_RX_BUF[UART5_RX_STA++] = res;		//记录接收到的值
             }
             else
-            {
+            { 
                 UART5_RX_STA |= 1 << 15;					//强制标记接收完成
             }
         }

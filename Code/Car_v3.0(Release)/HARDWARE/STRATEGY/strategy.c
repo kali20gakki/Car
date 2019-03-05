@@ -22,6 +22,7 @@
 #include "strategy.h"
 #include "servo.h"
 #include "usart3.h"
+#include "uart5.h"
 #include "oled.h"
 #include "string.h"
 
@@ -65,13 +66,6 @@ volatile u8 angle_Place[3];
 */
 void Strategy_MaterialColor(void)
 {
-    /* 物料顺序 */
-    OLED_ShowCHinese(0, 3, 7);
-    OLED_ShowCHinese(16, 3, 8);
-    OLED_ShowCHinese(32, 3, 9);
-    OLED_ShowCHinese(48, 3, 10);
-    OLED_ShowString(64, 3, ":");
-
     if(USART3_RX_STA & 0x8000)
     {
         if(strcmp(USART3_RX_BUF, "RGB") == 0)
@@ -153,15 +147,9 @@ void Strategy_MaterialColor(void)
 */
 void Strategy_QrcodeSquence(void)
 {
-    /* 识别二维码 */
-    OLED_ShowCHinese(0, 0, 0); 
-    OLED_ShowCHinese(16, 0, 4);
-    OLED_ShowCHinese(32, 0, 5);
-    OLED_ShowCHinese(48, 0, 6);
-    OLED_ShowString(64, 0, ":");
-    if(USART3_RX_STA & 0x8000)
+    if(UART5_RX_STA & 0x8000)
     {
-        QrcodeNum = atoi(USART3_RX_BUF);
+        QrcodeNum = atoi(UART5_RX_BUF);
         switch(QrcodeNum)
         {
             case 123 :  // 红绿蓝
@@ -266,7 +254,7 @@ void Strategy_QrcodeSquence(void)
             }
         }
         
-        USART3_RX_STA = 0; //重置接收位
+        UART5_RX_STA = 0; //重置接收位
     }
 
 }
