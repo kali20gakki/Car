@@ -474,14 +474,14 @@
               <FilePath>..\HARDWARE\KEY\key.c</FilePath>
             </File>
             <File>
-              <FileName>uart5.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\UART5\uart5.c</FilePath>
-            </File>
-            <File>
               <FileName>task.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\TASK\task.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart5.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\UART5\uart5.c</FilePath>
             </File>
             <File>
               <FileName>hc05.c</FileName>

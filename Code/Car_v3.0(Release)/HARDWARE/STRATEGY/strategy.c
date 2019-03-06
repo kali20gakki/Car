@@ -27,6 +27,8 @@
 #include "string.h"
 
 volatile u16 QrcodeNum;
+volatile u8 FLAG_QR = 1;
+
 
 /* 实际提取物料区三个转角  根据实际场地修改*/
 const u8 TAKE_LEFT  = 45;
@@ -77,6 +79,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 1);
             OLED_ShowCHinese(96, 3, 2);
             OLED_ShowCHinese(112, 3, 3);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
         else if(strcmp(USART3_RX_BUF, "RBG") == 0)
         {
@@ -87,6 +91,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 1);
             OLED_ShowCHinese(96, 3, 3);
             OLED_ShowCHinese(112, 3, 2);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
         else if(strcmp(USART3_RX_BUF, "GRB") == 0)
         {
@@ -97,6 +103,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 2);
             OLED_ShowCHinese(96, 3, 1);
             OLED_ShowCHinese(112, 3, 3);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
         else if(strcmp(USART3_RX_BUF, "GBR") == 0)
         {
@@ -107,6 +115,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 2);
             OLED_ShowCHinese(96, 3, 3);
             OLED_ShowCHinese(112, 3, 1);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
         else if(strcmp(USART3_RX_BUF, "BRG") == 0)
         {
@@ -117,6 +127,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 3);
             OLED_ShowCHinese(96, 3, 1);
             OLED_ShowCHinese(112, 3, 2);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
         else if(strcmp(USART3_RX_BUF, "BGR") == 0)
         {
@@ -127,6 +139,8 @@ void Strategy_MaterialColor(void)
             OLED_ShowCHinese(80, 3, 2);
             OLED_ShowCHinese(96, 3, 3);
             OLED_ShowCHinese(112, 3, 1);
+
+            USART_Cmd(USART3, DISABLE);  //失能串口3
         }
 
         USART3_RX_STA = 0; //重置接收位
@@ -152,108 +166,126 @@ void Strategy_QrcodeSquence(void)
         QrcodeNum = atoi(UART5_RX_BUF);
         switch(QrcodeNum)
         {
-            case 123 :  // 红绿蓝
-            {
-                angle_Take[0] = TAKE_R;
-                angle_Take[1] = TAKE_G;
-                angle_Take[2] = TAKE_B;
-                
-                angle_Place[0] = PLACE_R;
-                angle_Place[1] = PLACE_G;
-                angle_Place[2] = PLACE_B;
-                
-                OLED_ShowCHinese(80, 0, 1);
-                OLED_ShowCHinese(96, 0, 2);
-                OLED_ShowCHinese(112, 0, 3);
-                break;
-            }
-            case 132 :  // 红蓝绿
-            {
-                angle_Take[0] = TAKE_R;
-                angle_Take[1] = TAKE_B;
-                angle_Take[2] = TAKE_G;
-                
-                angle_Place[0] = PLACE_R;
-                angle_Place[1] = PLACE_B;
-                angle_Place[2] = PLACE_G;
-                
-                OLED_ShowCHinese(80, 0, 1);
-                OLED_ShowCHinese(96, 0, 3);
-                OLED_ShowCHinese(112, 0, 2);
-                break;
-            }
-            case 213 :  // 绿红蓝
-            {
-                angle_Take[0] = TAKE_G;
-                angle_Take[1] = TAKE_R;
-                angle_Take[2] = TAKE_B;
-                
-                angle_Place[0] = PLACE_G;
-                angle_Place[1] = PLACE_R;
-                angle_Place[2] = PLACE_B;
-                
-                OLED_ShowCHinese(80, 0, 2);
-                OLED_ShowCHinese(96, 0, 1);
-                OLED_ShowCHinese(112, 0, 3);
-                break;
-            }
-            case 231 :  // 绿蓝红
-            {
-                angle_Take[0] = TAKE_G;
-                angle_Take[1] = TAKE_B;
-                angle_Take[2] = TAKE_R;
-                                
-                angle_Place[0] = PLACE_G;
-                angle_Place[1] = PLACE_B;
-                angle_Place[2] = PLACE_R;
-                
-                OLED_ShowCHinese(80, 0, 2);
-                OLED_ShowCHinese(96, 0, 3);
-                OLED_ShowCHinese(112, 0, 1);
-                break;
-            }
-            case 312 :  // 蓝红绿
-            {
-                angle_Take[0] = TAKE_B;
-                angle_Take[1] = TAKE_R;
-                angle_Take[2] = TAKE_G;
-                                
-                angle_Place[0] = PLACE_B;
-                angle_Place[1] = PLACE_R;
-                angle_Place[2] = PLACE_G;
-                
-                OLED_ShowCHinese(80, 0, 3);
-                OLED_ShowCHinese(96, 0, 1);
-                OLED_ShowCHinese(112, 0, 2);
-                break;
-            }
-            case 321 :  // 蓝绿红
-            {
-                angle_Take[0] = TAKE_B;
-                angle_Take[1] = TAKE_G;
-                angle_Take[2] = TAKE_R;
-                                
-                angle_Place[0] = PLACE_B;
-                angle_Place[1] = PLACE_G;
-                angle_Place[2] = PLACE_R;
-                
-                OLED_ShowCHinese(80, 0, 3);
-                OLED_ShowCHinese(96, 0, 2);
-                OLED_ShowCHinese(112, 0, 1);
-                break;
-            }
-            default :   // 错误
-            {
-                angle_Take[0] = 90;
-                angle_Take[1] = 90;
-                angle_Take[2] = 90;
-                
-                OLED_ShowCHinese(80, 0, 11);
-                OLED_ShowCHinese(96, 0, 12);
-                break;
-            }
+        case 123 :  // 红绿蓝
+        {
+            angle_Take[0] = TAKE_R;
+            angle_Take[1] = TAKE_G;
+            angle_Take[2] = TAKE_B;
+
+            angle_Place[0] = PLACE_R;
+            angle_Place[1] = PLACE_G;
+            angle_Place[2] = PLACE_B;
+
+            OLED_ShowCHinese(80, 0, 1);
+            OLED_ShowCHinese(96, 0, 2);
+            OLED_ShowCHinese(112, 0, 3);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
         }
-        
+        case 132 :  // 红蓝绿
+        {
+            angle_Take[0] = TAKE_R;
+            angle_Take[1] = TAKE_B;
+            angle_Take[2] = TAKE_G;
+
+            angle_Place[0] = PLACE_R;
+            angle_Place[1] = PLACE_B;
+            angle_Place[2] = PLACE_G;
+
+            OLED_ShowCHinese(80, 0, 1);
+            OLED_ShowCHinese(96, 0, 3);
+            OLED_ShowCHinese(112, 0, 2);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
+        }
+        case 213 :  // 绿红蓝
+        {
+            angle_Take[0] = TAKE_G;
+            angle_Take[1] = TAKE_R;
+            angle_Take[2] = TAKE_B;
+
+            angle_Place[0] = PLACE_G;
+            angle_Place[1] = PLACE_R;
+            angle_Place[2] = PLACE_B;
+
+            OLED_ShowCHinese(80, 0, 2);
+            OLED_ShowCHinese(96, 0, 1);
+            OLED_ShowCHinese(112, 0, 3);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
+        }
+        case 231 :  // 绿蓝红
+        {
+            angle_Take[0] = TAKE_G;
+            angle_Take[1] = TAKE_B;
+            angle_Take[2] = TAKE_R;
+
+            angle_Place[0] = PLACE_G;
+            angle_Place[1] = PLACE_B;
+            angle_Place[2] = PLACE_R;
+
+            OLED_ShowCHinese(80, 0, 2);
+            OLED_ShowCHinese(96, 0, 3);
+            OLED_ShowCHinese(112, 0, 1);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
+        }
+        case 312 :  // 蓝红绿
+        {
+            angle_Take[0] = TAKE_B;
+            angle_Take[1] = TAKE_R;
+            angle_Take[2] = TAKE_G;
+
+            angle_Place[0] = PLACE_B;
+            angle_Place[1] = PLACE_R;
+            angle_Place[2] = PLACE_G;
+
+            OLED_ShowCHinese(80, 0, 3);
+            OLED_ShowCHinese(96, 0, 1);
+            OLED_ShowCHinese(112, 0, 2);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
+        }
+        case 321 :  // 蓝绿红
+        {
+            angle_Take[0] = TAKE_B;
+            angle_Take[1] = TAKE_G;
+            angle_Take[2] = TAKE_R;
+
+            angle_Place[0] = PLACE_B;
+            angle_Place[1] = PLACE_G;
+            angle_Place[2] = PLACE_R;
+
+            OLED_ShowCHinese(80, 0, 3);
+            OLED_ShowCHinese(96, 0, 2);
+            OLED_ShowCHinese(112, 0, 1);
+
+            USART_Cmd(UART5, DISABLE);  //失能串口5
+            FLAG_QR = 0;
+            break;
+        }
+        default :   // 错误
+        {
+            angle_Take[0] = 90;
+            angle_Take[1] = 90;
+            angle_Take[2] = 90;
+
+            OLED_ShowCHinese(80, 0, 11);
+            OLED_ShowCHinese(96, 0, 12);
+            break;
+        }
+        }
+
         UART5_RX_STA = 0; //重置接收位
     }
 

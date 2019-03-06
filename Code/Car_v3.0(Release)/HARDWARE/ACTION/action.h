@@ -24,6 +24,17 @@
 #include "sys.h"
 
 void Action_First(void);
+
+void action1(void);
+void action2(void);
+void action3(void);
+
+void actionA(void);
+void actionB(void);
+void actionC(void);
+void actionG(void);
+
+void action_Test(void);
 #endif
 
 /********************************End of File************************************/

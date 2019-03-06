@@ -22,8 +22,8 @@
 #include "sensor.h"
 #include "oled.h"
 #include "action.h"
-
-
+#include "strategy.h"
+#include "servo.h"
 
 extern u8 COUNT_FRONT_L;
 extern u8 COUNT_FRONT_R;
@@ -31,7 +31,7 @@ extern u8 COUNT_LEFT_U;
 extern u8 COUNT_RIGHT_U;
 extern u8 COUNT_RIGHT_D;
 
-
+extern u8 FLAG_QR;
 
 
 /*
@@ -64,7 +64,51 @@ void delay_Ntimes(int Num)
 */
 void Task_Full(void)
 {
-
+    Task_MoveLeft();
+    Task_MovePad();
+    Task_Qrcode();
+    Task_MoveMaterials();
+    
+    delay_Ntimes(1);   // 取物料
+    actionA();
+    delay_Ntimes(1);
+    actionG();
+    delay_Ntimes(1);
+    Task_MoveToPlace();
+    delay_Ntimes(1);   // 放置
+    action1();
+    delay_Ntimes(1);
+    action_Test();
+    
+    delay_Ntimes(1);
+    Task_MoveFromPlaceToMaterials();
+    
+    delay_Ntimes(1); 
+    actionB();
+    delay_Ntimes(1);
+    actionG();
+    delay_Ntimes(1);
+    Task_MoveToPlace();    
+    delay_Ntimes(1);
+    action2();
+    delay_Ntimes(1);
+    action_Test();
+    delay_Ntimes(1);
+    Task_MoveFromPlaceToMaterials();
+    
+    delay_Ntimes(1);
+    actionC();
+    delay_Ntimes(1);
+    actionG();
+    delay_Ntimes(1);
+    Task_MoveToPlace();
+    delay_Ntimes(1);
+    action3();
+    delay_Ntimes(1);  
+    action_Test();
+    delay_Ntimes(1);    
+    
+    Task_MoveStartPoint_4X3();
 }
 
 
@@ -89,7 +133,7 @@ void Task_TestSensor(void)
         OLED_ShowNum(80, 0, SENSOR_FRONT_L);
 
         OLED_ShowString(0, 2, "F_R = ");
-        OLED_ShowNum(50, 2, SENSOR_FRONT_R);
+        OLED_ShowNum(50, 2, COUNT_FRONT_R);
         OLED_ShowNum(80, 2, SENSOR_FRONT_R);
 
         OLED_ShowString(0, 4, "R_U = ");
@@ -115,25 +159,25 @@ void Task_TestSensor(void)
 */
 void Task_TestPath(void)
 {
-    Task_MoveLeft();
-    delay_ms(100);
-    Task_MovePad();
-    delay_Ntimes(2);
-    Task_MoveMaterials();
-    delay_Ntimes(2);
-//    Task_MoveBackward();
+//    Task_MoveLeft();
+//    delay_ms(100);
+//    Task_MovePad();
 //    delay_Ntimes(2);
-    Task_MovePlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MoveFromPlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MovePlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MoveFromPlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MovePlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MoveStartPoint_4X3();
+//    Task_MoveMaterials();
+//    delay_Ntimes(2);
+////    Task_MoveBackward();
+////    delay_Ntimes(2);
+//    Task_MovePlaceToMaterials();
+//    delay_Ntimes(2);
+//    Task_MoveFromPlaceToMaterials();
+//    delay_Ntimes(2);
+//    Task_MovePlaceToMaterials();
+//    delay_Ntimes(2);
+//    Task_MoveFromPlaceToMaterials();
+//    delay_Ntimes(2);
+//    Task_MovePlaceToMaterials();
+//    delay_Ntimes(2);
+//    Task_MoveStartPoint_4X3();
 }
 
 
@@ -171,7 +215,12 @@ void Task_MoveLeft(void)
 */
 void Task_MoveIncline(void)
 {
-
+    COUNT_FRONT_L = 0;
+    while(COUNT_FRONT_L != 3)
+    {
+        Kinematic_Analysis(-20, 20);
+    }
+    Kinematic_Analysis(0, 0);
 }
 
 
@@ -191,11 +240,32 @@ void Task_MovePad(void)
     while(COUNT_RIGHT_U != 6)
     {
         Car_TrackFront();
+        Strategy_MaterialColor();
     }
 
     Kinematic_Analysis(0, 0);
 }
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-06
+*
+* @func  : Task_Qrcode
+* @param : None
+* @return: None
+* @note  : None  识别Qrcode
+*
+*/
+void Task_Qrcode(void)
+{
+    while(FLAG_QR)
+    {
+        Kinematic_Analysis(0, 0);
+        Strategy_QrcodeSquence();
+    }
+}
 
 /*
 * @auther: Mrtutu
@@ -230,7 +300,7 @@ void Task_MoveMaterials(void)
 void Task_MoveBackward(void)
 {
     COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 2)Kinematic_Analysis(-20, 0);
+    while(COUNT_FRONT_R != 2)Kinematic_Analysis(-15, 0);
 
     Kinematic_Analysis(0, 0);
 }
@@ -280,7 +350,7 @@ void Task_PlaceMaterials(void)
 * @note  : None  平移到放置区
 *
 */
-void Task_MovePlaceToMaterials(void)
+void Task_MoveToPlace(void)
 {
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R != 4)Car_TrackLeft();
@@ -303,7 +373,7 @@ void Task_MovePlaceToMaterials(void)
 void Task_MoveFromPlaceToMaterials(void)
 {
     COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 4)Car_TrackRight();
+    while(COUNT_FRONT_R != 3)Car_TrackRight();
 
     Kinematic_Analysis(0, 0);
 }

@@ -66,6 +66,7 @@ volatile u8 COUNT_RIGHT_D;
 /*******************************************************************************/
 
 /**********************************标志位***************************************/
+
 /*******************************************************************************/
 
 
@@ -100,20 +101,38 @@ int main(void)
     Task_OLED();
     while(1)
     {
-//        key = KEY_Scan(0);
-//        if(key == 1)
-//        {
-//            Task_TestPath();
-//            while(1);
-//        }
-//        else if(key == 2)
-//        {
-//            Task_TestSensor();
-//        }
-//        else if(key == 3)
-//        {
-//            Strategy_QrcodeSquence();
-//        }
+        key = KEY_Scan(0);
+        if(key == 1)
+        {
+            COUNT_FRONT_L = 0;
+            Task_Full();
+            while(1);
+        }
+        else if(key == 2)
+        {
+            Task_TestSensor();
+        }
+        else if(key == 3)
+        {
+          // while(1)Strategy_QrcodeSquence();
+            
+           Servo4_SpeedRegulation(44,10);
+           Servo3_SpeedRegulation(90,10);
+           Servo2_SpeedRegulation(55,10);
+           Servo3_SpeedRegulation(180,10);
+            
+           Servo4_SpeedRegulation(90,10);
+           Servo3_SpeedRegulation(90,10);
+           Servo2_SpeedRegulation(55,10);
+           Servo3_SpeedRegulation(180,10);
+            
+           Servo4_SpeedRegulation(135,10);
+           Servo3_SpeedRegulation(90,10);
+           Servo2_SpeedRegulation(55,10);
+           Servo3_SpeedRegulation(180,10);
+            
+            
+        }
 
     }
 }
