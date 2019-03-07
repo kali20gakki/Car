@@ -97,6 +97,7 @@ int main(void)
 
     /*******************************************************************************/
 
+    PlaceColor_Init();
     Action_First();
     Task_OLED();
     while(1)
@@ -110,28 +111,12 @@ int main(void)
         }
         else if(key == 2)
         {
-            Task_TestSensor();
+           Task_TestSensor();
         }
         else if(key == 3)
         {
-          // while(1)Strategy_QrcodeSquence();
-            
-           Servo4_SpeedRegulation(44,10);
-           Servo3_SpeedRegulation(90,10);
-           Servo2_SpeedRegulation(55,10);
-           Servo3_SpeedRegulation(180,10);
-            
-           Servo4_SpeedRegulation(90,10);
-           Servo3_SpeedRegulation(90,10);
-           Servo2_SpeedRegulation(55,10);
-           Servo3_SpeedRegulation(180,10);
-            
-           Servo4_SpeedRegulation(135,10);
-           Servo3_SpeedRegulation(90,10);
-           Servo2_SpeedRegulation(55,10);
-           Servo3_SpeedRegulation(180,10);
-            
-            
+            Strategy_MaterialColor();
+            Strategy_QrcodeSquence();
         }
 
     }

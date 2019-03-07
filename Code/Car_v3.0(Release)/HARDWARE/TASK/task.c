@@ -64,50 +64,37 @@ void delay_Ntimes(int Num)
 */
 void Task_Full(void)
 {
-    Task_MoveLeft();
-    Task_MovePad();
-    Task_Qrcode();
-    Task_MoveMaterials();
-    
-    delay_Ntimes(1);   // 取物料
-    actionA();
-    delay_Ntimes(1);
-    actionG();
-    delay_Ntimes(1);
+    Task_MoveLeft();         // 左移到线上
+    Task_MovePad();          // 寻迹到Pad
+    Task_Qrcode();           // 识别Qrcode
+    Task_MoveMaterials();    // 后退到物料
+
+    /* 第一次搬运 */
+    Action_Take_1(7);
+    Action_AfterTake(7);
     Task_MoveToPlace();
-    delay_Ntimes(1);   // 放置
-    action1();
-    delay_Ntimes(1);
-    action_Test();
-    
-    delay_Ntimes(1);
+    Action_Place_1(7);
+    Action_AfterPlace(7);
     Task_MoveFromPlaceToMaterials();
-    
-    delay_Ntimes(1); 
-    actionB();
-    delay_Ntimes(1);
-    actionG();
-    delay_Ntimes(1);
-    Task_MoveToPlace();    
-    delay_Ntimes(1);
-    action2();
-    delay_Ntimes(1);
-    action_Test();
-    delay_Ntimes(1);
-    Task_MoveFromPlaceToMaterials();
-    
-    delay_Ntimes(1);
-    actionC();
-    delay_Ntimes(1);
-    actionG();
-    delay_Ntimes(1);
+
+    /* 第二次搬运 */
+    Action_Take_2(7);
+    Action_AfterTake(7);
     Task_MoveToPlace();
+    Action_Place_2(7);
+    Action_AfterPlace(7);
+    Task_MoveFromPlaceToMaterials();
+
+
+    /* 第三次搬运 */
+    Action_Take_3(7);
+    Action_AfterTake(7);
+    Task_MoveToPlace();
+    Action_Place_3(7);
+    Action_AfterPlace(7);
+
     delay_Ntimes(1);
-    action3();
-    delay_Ntimes(1);  
-    action_Test();
-    delay_Ntimes(1);    
-    
+
     Task_MoveStartPoint_4X3();
 }
 
@@ -159,25 +146,23 @@ void Task_TestSensor(void)
 */
 void Task_TestPath(void)
 {
-//    Task_MoveLeft();
-//    delay_ms(100);
-//    Task_MovePad();
-//    delay_Ntimes(2);
-//    Task_MoveMaterials();
-//    delay_Ntimes(2);
-////    Task_MoveBackward();
-////    delay_Ntimes(2);
-//    Task_MovePlaceToMaterials();
-//    delay_Ntimes(2);
-//    Task_MoveFromPlaceToMaterials();
-//    delay_Ntimes(2);
-//    Task_MovePlaceToMaterials();
-//    delay_Ntimes(2);
-//    Task_MoveFromPlaceToMaterials();
-//    delay_Ntimes(2);
-//    Task_MovePlaceToMaterials();
-//    delay_Ntimes(2);
-//    Task_MoveStartPoint_4X3();
+    Task_MoveLeft();
+    delay_ms(100);
+    Task_MovePad();
+    delay_Ntimes(2);
+    Task_MoveMaterials();
+    delay_Ntimes(2);
+    Task_MoveMaterials();
+    delay_Ntimes(2);
+    Task_MoveFromPlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MoveMaterials();
+    delay_Ntimes(2);
+    Task_MoveFromPlaceToMaterials();
+    delay_Ntimes(2);
+    Task_MoveMaterials();
+    delay_Ntimes(2);
+    Task_MoveStartPoint_4X3();
 }
 
 
@@ -260,11 +245,8 @@ void Task_MovePad(void)
 */
 void Task_Qrcode(void)
 {
-    while(FLAG_QR)
-    {
-        Kinematic_Analysis(0, 0);
-        Strategy_QrcodeSquence();
-    }
+    Kinematic_Analysis(0, 0);
+    while(FLAG_QR)Strategy_QrcodeSquence();
 }
 
 /*

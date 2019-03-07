@@ -214,7 +214,7 @@ void Action_Take_3(u8 time)
 void Action_AfterTake(u8 time)
 {
     Servo1_SpeedRegulation(6, time);               // 爪子一直闭合
-    Servo2_SpeedRegulation(65, time);              // 前臂直立起来
+    Servo2_SpeedRegulation(145, time);              // 前臂直立起来
     Servo3_SpeedRegulation(0, time);               // 抬平
 
     Servo4_SpeedRegulation(90, time);              // 底部舵机复位
@@ -222,15 +222,11 @@ void Action_AfterTake(u8 time)
 
 void Action_Place_1(u8 time)
 {
-    Servo4_SpeedRegulation(angle_Place[0], time);   // 底部先转到指定位置
-    Servo3_SpeedRegulation(140, 1);                 // 3先转一个合适的角度
+    Servo4_SpeedRegulation(angle_Place[0], 10);   // 底部先转到指定位置
+    Servo3_SpeedRegulation(90, 1);                 // 3先转一个合适的角度
+    Servo2_SpeedRegulation(50, 10);               // 
+    Servo3_SpeedRegulation(180, time);                 // 3适中速度放下
 
-    delay_ms(100);
-    Servo2_SpeedRegulation(0, time);                // 预备动作
-
-    Servo3_SpeedRegulation(140, time);                 // 3适中速度放下
-
-    Servo2_SpeedRegulation(50, time);               // 落地
 
     Servo1_SpeedRegulation(80, 1);                  // 松手 快速
 }
@@ -238,29 +234,19 @@ void Action_Place_1(u8 time)
 void Action_Place_2(u8 time)
 {
     Servo4_SpeedRegulation(angle_Place[1], time);   // 底部先转到指定位置
-    Servo3_SpeedRegulation(140, 1);                 // 3先转一个合适的角度
-
-    delay_ms(100);
-    Servo2_SpeedRegulation(0, time);                // 预备动作
-
-    Servo3_SpeedRegulation(140, time);                 // 3适中速度放下
-
+    Servo3_SpeedRegulation(90, 1);                 // 3先转一个合适的角度
     Servo2_SpeedRegulation(50, time);               // 落地
-
+    Servo3_SpeedRegulation(180, time);              // 3适中速度放下
+    
     Servo1_SpeedRegulation(80, 1);                  // 松手 快速
 }
 
 void Action_Place_3(u8 time)
 {
     Servo4_SpeedRegulation(angle_Place[2], time);   // 底部先转到指定位置
-    Servo3_SpeedRegulation(140, 1);                 // 3先转一个合适的角度
-
-    delay_ms(100);
-    Servo2_SpeedRegulation(0, time);                // 预备动作
-
-    Servo3_SpeedRegulation(140, time);                 // 3适中速度放下
-
+    Servo3_SpeedRegulation(90, 1);                 // 3先转一个合适的角度
     Servo2_SpeedRegulation(50, time);               // 落地
+    Servo3_SpeedRegulation(180, time);                 // 3适中速度放下
 
     Servo1_SpeedRegulation(80, 1);                  // 松手 快速
 }
@@ -270,12 +256,11 @@ void Action_AfterPlace(u8 time)
 {
     Servo1_SpeedRegulation(80, time);               // 爪子打开
 
-    Servo3_SpeedRegulation(100, time);              // 先抬起来
-    delay_ms(100);
-    Servo2_SpeedRegulation(0, time);                // 先抬起来
+    Servo3_SpeedRegulation(90, 10);               // 先抬起来
+    //delay_ms(100);
+    Servo2_SpeedRegulation(145, time);                // 先抬起来
 
     Servo3_SpeedRegulation(10, time);
-    Servo2_SpeedRegulation(90, time);
 
     Servo4_SpeedRegulation(90, time);               // 复位
 }

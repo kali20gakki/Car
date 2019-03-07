@@ -27,6 +27,7 @@
 void Strategy_MaterialColor(void);
 void Strategy_QrcodeSquence(void);
 
+void PlaceColor_Init(void);
 
 #endif
 

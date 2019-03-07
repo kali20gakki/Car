@@ -31,14 +31,14 @@ volatile u8 FLAG_QR = 1;
 
 
 /* 实际提取物料区三个转角  根据实际场地修改*/
-const u8 TAKE_LEFT  = 45;
+const u8 TAKE_LEFT  = 117;
 const u8 TAKE_MID   = 90;
-const u8 TAKE_RIGHT = 135;
+const u8 TAKE_RIGHT = 70;
 
 /* 实际放置物料区三个转角  根据实际场地修改*/
-const u8 PLACE_LEFT = 0;
-const u8 PLACE_MID = 0;
-const u8 PLACE_RIGHT = 0;
+const u8 PLACE_LEFT = 44;
+const u8 PLACE_MID = 90;
+const u8 PLACE_RIGHT = 135;
 
 /* 放置物料对应舵机转角 */
 u8 PLACE_R;
@@ -55,6 +55,27 @@ volatile u8 angle_Take[3];
 
 /* 物料放置区对应舵机4转角 */
 volatile u8 angle_Place[3];
+
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-03-07
+*
+* @func  : PlaceColor_Init
+* @param : None
+* @return: None
+* @note  : None   放置区颜色顺序
+*
+*/
+void PlaceColor_Init(void)
+{
+    PLACE_R = PLACE_RIGHT;
+    PLACE_G = PLACE_MID;
+    PLACE_B = PLACE_LEFT;
+}
+
 
 /*
 * @auther: Mrtutu
@@ -276,12 +297,17 @@ void Strategy_QrcodeSquence(void)
         }
         default :   // 错误
         {
-            angle_Take[0] = 90;
-            angle_Take[1] = 90;
-            angle_Take[2] = 90;
+            angle_Take[0] = TAKE_R;
+            angle_Take[1] = TAKE_G;
+            angle_Take[2] = TAKE_B;
+
+            angle_Place[0] = PLACE_R;
+            angle_Place[1] = PLACE_G;
+            angle_Place[2] = PLACE_B;
 
             OLED_ShowCHinese(80, 0, 11);
-            OLED_ShowCHinese(96, 0, 12);
+            OLED_ShowCHinese(96, 0, 0);
+            OLED_ShowCHinese(112, 0, 4);
             break;
         }
         }
