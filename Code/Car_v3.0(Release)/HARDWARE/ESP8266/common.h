@@ -7,9 +7,9 @@
 **                           Blog: www.mrtutu.cn
 **
 **----------------------------------文件信息------------------------------------
-** @flie    : action.h
+** @flie    : common.h
 ** @auther  : Mrtutu
-** @date    : 2019-03-03
+** @date    : 2019-04-01
 ** @describe: 
 **
 **----------------------------------版本信息------------------------------------
@@ -19,25 +19,21 @@
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
  
-#ifndef __ACTION_H_
-#define __ACTION_H_
+#ifndef __COMMON_H_
+#define __COMMON_H_
 #include "sys.h"
 
-void Action_First(void);
 
-void Action_Take_1(u8 time);
-void Action_Take_2(u8 time);
-void Action_Take_3(u8 time);
 
-void Action_AfterTake(u8 time);
+//用户配置参数
+extern const u8* IP_Adress;			//连接端口
+extern const u8* Port;			//连接端口
+ 
+extern const u8* wifista_ssid;		//WIFI STA SSID
+extern const u8* wifista_encryption;//WIFI STA 加密方式
+extern const u8* wifista_password; 	//WIFI STA 密码
 
-void Action_Place_1(u8 time);
-void Action_Place_2(u8 time);
-void Action_Place_3(u8 time);
 
-void Action_AfterPlace(u8 time);
-
-void action_Test(void);
 #endif
 
 /********************************End of File************************************/

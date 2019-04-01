@@ -33,6 +33,7 @@ extern u8 COUNT_RIGHT_D;
 
 extern u8 FLAG_QR;
 
+extern u8 angle_Place[3];
 
 /*
 * @auther: Mrtutu
@@ -69,29 +70,40 @@ void Task_Full(void)
     Task_Qrcode();           // 识别Qrcode
     Task_MoveMaterials();    // 后退到物料
 
+    delay_Ntimes(1);
     /* 第一次搬运 */
     Action_Take_1(7);
     Action_AfterTake(7);
-    Task_MoveToPlace();
+    if(angle_Place[0] == 90)Task_MoveToPlace2();
+    else Task_MoveToPlace();
     Action_Place_1(7);
+    delay_Ntimes(1);
     Action_AfterPlace(7);
+    delay_Ntimes(1);
     Task_MoveFromPlaceToMaterials();
 
     /* 第二次搬运 */
-    Action_Take_2(7);
-    Action_AfterTake(7);
-    Task_MoveToPlace();
-    Action_Place_2(7);
-    Action_AfterPlace(7);
+    //Action_Take_2(7);
+    delay_Ntimes(1);
+    //Action_AfterTake(7);
+    if(angle_Place[1] == 90)Task_MoveToPlace2();
+    else Task_MoveToPlace();
+   // Action_Place_2(7);
+    delay_Ntimes(1);
+    //Action_AfterPlace(7);
+    delay_Ntimes(1);
     Task_MoveFromPlaceToMaterials();
 
 
     /* 第三次搬运 */
-    Action_Take_3(7);
-    Action_AfterTake(7);
-    Task_MoveToPlace();
-    Action_Place_3(7);
-    Action_AfterPlace(7);
+    //Action_Take_3(7);
+    delay_Ntimes(1);
+    //Action_AfterTake(7);
+    if(angle_Place[2] == 90)Task_MoveToPlace2();
+    else Task_MoveToPlace();
+    //Action_Place_3(7);
+    delay_Ntimes(1);
+   // Action_AfterPlace(7);
 
     delay_Ntimes(1);
 
@@ -344,6 +356,25 @@ void Task_MoveToPlace(void)
 
 /*
 * @auther: Mrtutu
+* @date  ：2019-03-08
+*
+* @func  : Task_MoveToPlace2
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_MoveToPlace2(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R != 3)Car_TrackLeft();
+
+    Kinematic_Analysis(0, 0);
+}
+
+
+/*
+* @auther: Mrtutu
 * @date  ：2019-03-03
 *
 * @func  : Task_MoveFromPlaceToMaterials
@@ -374,9 +405,9 @@ void Task_MoveFromPlaceToMaterials(void)
 */
 void Task_MoveStartPoint_4X3(void)
 {
-    Kinematic_Analysis(24, -40);
+    Kinematic_Analysis(30, -40);
 
-    delay_Ntimes(19);
+    delay_Ntimes(15);
     Kinematic_Analysis(0, 0);
 }
 
@@ -401,4 +432,6 @@ void Task_OLED(void)
     OLED_ShowCHinese(48, 0, 6);
     OLED_ShowString(64, 0, ":");
 }
+
+
 /********************************End of File************************************/

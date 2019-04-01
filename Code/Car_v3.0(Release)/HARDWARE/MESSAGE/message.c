@@ -61,7 +61,7 @@ void OLED_Show_Qcode(void)
     OLED_ShowString(64, 0, ":");
     if(USART3_RX_STA & 0x8000)
     {
-        QrcodeNum = atoi(USART3_RX_BUF);
+        QrcodeNum = atoi(USART3_RX_BUF); // 字符串转int
         switch(QrcodeNum)
         {
             case 123 :  // 红绿蓝

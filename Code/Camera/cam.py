@@ -36,7 +36,6 @@ def qrcode_recognition():
         img.draw_rectangle(code.rect(), color = (255, 0, 0)) # 脱机时注释提高性能
         if(code[4]):
             uart.write(code[4]+"\r\n")
-            led_flash()
             print(code[4]+"\r\n")
 
 

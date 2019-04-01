@@ -40,6 +40,7 @@ void Task_MoveFromPlaceToMaterials(void);
 void Task_MoveStartPoint_4X3(void);
 void Task_OLED(void);
 
+void Task_MoveToPlace2();
 #endif
 
 /********************************End of File************************************/

@@ -24,13 +24,12 @@ counter = 0
 
 # 红绿蓝 阈值 要根据实际颜色调试
 red_threshold = (93, 24, 98, 29, -54, 90)
-# green_threshold = (1, 26, -9, -82, -6, 49)
-green_threshold = (30, 62, -14, -65, -27, 59) # 纸片
+green_threshold = (16, 90, -8, -33, -30, 17)
 blue_threshold = (5, 67, 76, -101, -27, -128)
 
 # RGB 阈值的组合  对应code 1  2  4
 thresholds = [(93, 24, 98, 29, -54, 90),
-              (30, 62, -14, -65, -27, 59),
+              (16, 90, -8, -33, -30, 17),
              (5, 67, 76, -101, -27, -128)]
 
 
@@ -58,7 +57,7 @@ while(True):
     img = sensor.snapshot()
     img.lens_corr(1.0)
     if(flagEN):
-        for blob in img.find_blobs(thresholds, pixels_threshold=500,merge=False):
+        for blob in img.find_blobs(thresholds, pixels_threshold=3000,merge=False):
             img.draw_rectangle(blob.rect())
             img.draw_cross(blob.cx(), blob.cy())
             if(blob.code() == 1):

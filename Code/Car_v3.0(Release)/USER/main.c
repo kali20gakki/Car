@@ -94,12 +94,18 @@ int main(void)
     Beep_Init();                                     // 蜂鸣器初始化
     IIC_Init();                                      // OLED IIC初始化
     OLED_Init();                                     // OLED初始化
+    OLED_Clear();
 
-    /*******************************************************************************/
+    /****************************初始化动作***************************************************/
 
-    PlaceColor_Init();
-    Action_First();
+    PlaceColor_Init(321);
+    //Action_First();
+    OLED_ShowCHinese(80, 0, 1);
+    OLED_ShowCHinese(96, 0, 2);
+    OLED_ShowCHinese(112, 0, 3);
+    //Action_Test();
     Task_OLED();
+    /*****************************************************************************************/
     while(1)
     {
         key = KEY_Scan(0);
@@ -109,14 +115,16 @@ int main(void)
             Task_Full();
             while(1);
         }
-        else if(key == 2)
+        else if(key == 2) 
         {
            Task_TestSensor();
         }
         else if(key == 3)
         {
-            Strategy_MaterialColor();
-            Strategy_QrcodeSquence();
+           Servo1_SpeedRegulation(30, 15);
+           Servo2_SpeedRegulation(0, 15);
+           Servo3_SpeedRegulation(85, 15);
+           Servo4_SpeedRegulation(90, 15);
         }
 
     }

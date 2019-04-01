@@ -66,14 +66,50 @@ volatile u8 angle_Place[3];
 * @func  : PlaceColor_Init
 * @param : None
 * @return: None
-* @note  : None   放置区颜色顺序
+* @note  : None   放置区颜色顺序    从左到右
 *
 */
-void PlaceColor_Init(void)
+void PlaceColor_Init(u16 Num)
 {
-    PLACE_R = PLACE_RIGHT;
-    PLACE_G = PLACE_MID;
-    PLACE_B = PLACE_LEFT;
+    switch(Num)
+    {
+    case 123: // 红绿蓝
+    {
+        PLACE_R = PLACE_LEFT;
+        PLACE_G = PLACE_MID;
+        PLACE_B = PLACE_RIGHT;
+    }
+    case 132: // 红蓝绿
+    {
+        PLACE_R = PLACE_LEFT;
+        PLACE_B = PLACE_MID;
+        PLACE_G = PLACE_RIGHT;
+    }
+    case 213: // 绿红蓝
+    {
+        PLACE_G = PLACE_LEFT;
+        PLACE_R = PLACE_MID;
+        PLACE_B = PLACE_RIGHT;
+    }
+    case 231: // 绿蓝红
+    {
+        PLACE_G = PLACE_LEFT;
+        PLACE_B = PLACE_MID;
+        PLACE_R = PLACE_RIGHT;
+    }
+    case 312: // 蓝红绿
+    {
+        PLACE_B = PLACE_LEFT;
+        PLACE_R = PLACE_MID;
+        PLACE_G = PLACE_RIGHT;
+    }
+    case 321: // 蓝绿红
+    {
+        PLACE_B = PLACE_LEFT;
+        PLACE_G = PLACE_MID;
+        PLACE_R = PLACE_RIGHT;
+    }
+    }
 }
 
 
