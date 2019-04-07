@@ -31,10 +31,10 @@
 
 const float K = 33.333333f;  // PWM公式系数
 
-static int servo1_last_angle = 70;
-static int servo2_last_angle = 100;
-static int servo3_last_angle = 0;
-static int servo4_last_angle = 70;
+static int servo1_last_angle = 105;
+static int servo2_last_angle = 114;
+static int servo3_last_angle = 150;
+static int servo4_last_angle = 88;
 
 
 /*

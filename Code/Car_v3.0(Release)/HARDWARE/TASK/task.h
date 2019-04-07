@@ -39,7 +39,13 @@ void Task_MoveToPlace(void);
 void Task_MoveFromPlaceToMaterials(void);
 void Task_MoveStartPoint_4X3(void);
 void Task_OLED(void);
-
+void Task_WIFI(void);
+void Task_MoveProcess(void);
+void Task_MoveProcessToMaterial(void);
+void Task_PrepareForWIFI(void);
+void Task_MoveToGrab(void);
+void Task_MoveBackHome(void);
+void Task_Move1x1(void);
 void Task_MoveToPlace2();
 #endif
 

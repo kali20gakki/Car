@@ -31,7 +31,7 @@
 extern volatile int Motor_A,Motor_B,Motor_C,Motor_D;         // PI算法返回赋值 临时PWM值
 extern volatile int Encoder_A,Encoder_B,Encoder_C,Encoder_D; // 编码器返回赋值 
 extern volatile int Target_A,Target_B,Target_C,Target_D;
-
+extern u16 counter;
 
 /*
 * @auther: Main
@@ -68,6 +68,57 @@ void TIM7_Int_Init(u16 arr, u16 psc)
 
     TIM_Cmd(TIM7, ENABLE); //使能定时器 7
 }
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-07
+*
+* @func  : TIM13_Int_Init   定时器13 定时中断
+* @param : arr: [输入/出] 
+**			 psc: [输入/出] 
+* @return: None
+* @note  : None  溢出时间 1s  --  arr 16800 -1   psc 5000 -1
+*
+*/
+void TIM13_Int_Init(u16 arr, u16 psc)
+{
+    /*结构体初始化*/
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+    /*使能 TIM13 时钟*/
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM13, ENABLE);
+    TIM_TimeBaseInitStructure.TIM_Period = arr; //自动重装载值
+    TIM_TimeBaseInitStructure.TIM_Prescaler = psc; //定时器分频
+    TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //向上计数模式
+    TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    /*初始化定时器TIM13*/
+    TIM_TimeBaseInit(TIM13, &TIM_TimeBaseInitStructure);
+    /*允许定时器 7 更新中断*/
+    TIM_ITConfig(TIM13, TIM_IT_Update, ENABLE);
+
+    NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn; //定时器 13 中断
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级 0
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02; //响应优先级 1
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure); // 初始化 NVIC
+
+    TIM_Cmd(TIM13, ENABLE); //使能定时器 7
+}
+
+
+
+void TIM8_UP_TIM13_IRQHandler(void)
+{
+    if(TIM_GetITStatus(TIM13,TIM_IT_Update)==SET) //溢出中断
+    {
+        counter += 1; // 1s累加一次
+    }
+    TIM_ClearITPendingBit(TIM13,TIM_IT_Update); //清除中断标志位
+}
+
+
 
 
 

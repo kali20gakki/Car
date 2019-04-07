@@ -7,10 +7,10 @@
 **                           Blog: www.mrtutu.cn
 **
 **----------------------------------文件信息------------------------------------
-** @flie    : sensor.h
+** @flie    : usart2.h
 ** @auther  : Mrtutu
-** @date    : 2019-02-17
-** @describe:
+** @date    : 2019-04-07
+** @describe: 
 **
 **----------------------------------版本信息------------------------------------
 ** 版本代号: V0.1
@@ -18,25 +18,20 @@
 **
 **------------------------------------------------------------------------------
 \********************************End of Head************************************/
-
-#ifndef __SENSOR_H_
-#define __SENSOR_H_
+ 
+#ifndef __USART2_H_
+#define __USART2_H_
 #include "sys.h"
+#include "stdio.h"	
+#include "stm32f4xx_conf.h"
+#define USART2_MAX_RECV_LEN 255
+#define USART2_MAX_SEND_LEN 255
 
-/* 前 */
-#define SENSOR_FRONT_L             PAin(5)   //PA5
-#define SENSOR_FRONT_R             PCin(3)   //PC3
-/* 后 */
-#define SENSOR_BACK_L              PEin(5)   //PE5
-#define SENSOR_BACK_R              PCin(1)   //PC1
-/* 左 */
-#define SENSOR_LEFT_U              PEin(6)   //PE6
-#define SENSOR_LEFT_D              PCin(15)   //PC15
-/* 右 */
-#define SNESOR_RIGHT_U             PCin(13)   //PA3
-#define SNESOR_RIGHT_D             PCin(0)    //PC0
-
-
+extern u8 USART2_RX_BUF[USART2_MAX_RECV_LEN];
+extern u8 USART2_TX_BUF[USART2_MAX_SEND_LEN];
+extern u16 USART2_RX_STA; //接收状态标记 
+void usart2_init(u32 bound);
+void usart2_printf(char* fmt, ...);
 
 #endif
 

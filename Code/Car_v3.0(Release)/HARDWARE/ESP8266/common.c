@@ -26,12 +26,12 @@
 
 
 //WIFI STA模式,设置要去连接的路由器无线参数,请根据你自己的路由器设置,自行修改.
-const u8* wifista_ssid = "Mrtutu";			//路由器SSID号
+const u8* wifista_ssid = "zhangwei";			//路由器SSID号
 const u8* wifista_encryption = "wpawpa2_aes";	//wpa/wpa2 aes加密方式
-const u8* wifista_password = "zhangweibaba"; 	//连接密码
+const u8* wifista_password = "12345678"; 	//连接密码
 
-const u8* IP_Adress="192.168.31.213";
-const u8* Port="8888";
+const u8* IP_Adress="192.168.43.189";
+const u8* Port="8866";
 
 
 
@@ -89,7 +89,6 @@ u8 ESP8266_send_cmd(u8 *cmd,u8 *ack,u16 waittime)
 			{
 				if(ESP8266_check_cmd(ack))
 				{
-					printf("ack:%s\r\n",(u8*)ack);
 					break;//得到有效数据 
 				}
 					UART5_RX_STA=0;

@@ -24,16 +24,27 @@
 #include "action.h"
 #include "strategy.h"
 #include "servo.h"
+#include "math.h"
+#include "beep.h"
+#include "includes.h"
 
-extern u8 COUNT_FRONT_L;
-extern u8 COUNT_FRONT_R;
-extern u8 COUNT_LEFT_U;
-extern u8 COUNT_RIGHT_U;
-extern u8 COUNT_RIGHT_D;
+int num;
+extern u16 counter;
 
-extern u8 FLAG_QR;
 
-extern u8 angle_Place[3];
+extern volatile int Process_R;
+extern volatile int Process_G;
+extern volatile int Process_B;
+
+extern volatile int Position_R;
+extern volatile int Position_G;
+extern volatile int Position_B;
+
+extern volatile int Finish_R;
+extern volatile int Finish_G;
+extern volatile int Finish_B;
+
+
 
 /*
 * @auther: Mrtutu
@@ -63,53 +74,189 @@ void delay_Ntimes(int Num)
 * @note  : None  完整任务
 *
 */
-void Task_Full(void)
+void Task_Release(void)
+{
+    /** 1. 向左平移到线上 **/
+    Task_MoveLeft();
+
+    /** 2. 向前移动到Pad以及识别物料颜色顺序 **/
+    Task_MovePad();
+
+    Position_G = 3;
+    Position_R = 4;
+    Position_B = 5;
+
+    /** 3. 识别二维码 **/
+    //Task_Qrcode();
+
+    Take_Material_Order[0] = Position_R;
+    Take_Material_Order[1] = Position_G;
+    Take_Material_Order[2] = Position_B;
+
+    Place_Process_Order[0] = Process_R;
+    Place_Process_Order[1] = Process_G;
+    Place_Process_Order[2] = Process_B;
+
+    delay_Ntimes(2);
+
+    /** 4. 向后移动到第一个抓取位置以及抓取 **/
+    Strategy_Xaxis_Move(Position_Pad, Take_Material_Order[0], 20);
+
+    // 第一次抓取动作
+    delay_Ntimes(2);
+
+    /** 5. 先移动到指定色环线上 再向加工区左移**/
+    Strategy_Xaxis_Move(Take_Material_Order[0], Place_Process_Order[0], 20); // 先移动到指定色环线上
+
+    Task_MoveProcess();  // 向加工区移动
+
+    // 第一次放置动作
+    delay_Ntimes(2);
+
+    /** 6. 先原路返回再移动到抓取位置 **/
+    Task_MoveProcessToMaterial();  // 原路返回
+
+    Strategy_Xaxis_Move(Place_Process_Order[0], Take_Material_Order[1], 20); // 移动到指定色环线上
+
+    // 第二次抓取动作
+    delay_Ntimes(2);
+
+    /** 7. 先移动到指定色环线上 再向加工区左移**/
+    Strategy_Xaxis_Move(Take_Material_Order[1], Place_Process_Order[1], 20); // 先移动到指定色环线上
+
+    Task_MoveProcess();  // 向加工区移动
+
+    // 第二次放置动作
+    delay_Ntimes(2);
+
+
+    /** 8. 先原路返回再移动到抓取位置 **/
+    Task_MoveProcessToMaterial();  // 原路返回
+
+    Strategy_Xaxis_Move(Place_Process_Order[1], Take_Material_Order[2], 20); // 移动到指定色环线上
+
+    // 第三次抓取动作
+    delay_Ntimes(2);
+
+
+    /** 9. 先移动到指定色环线上 再向加工区左移**/
+    Strategy_Xaxis_Move(Take_Material_Order[2], Place_Process_Order[2], 20); // 先移动到指定色环线上
+
+    Task_MoveProcess();  // 向加工区移动
+
+    // 第三次放置动作
+    delay_Ntimes(2);
+
+
+    /** 10. 向外移动两根线为WIFI指令做准备 **/
+    Task_PrepareForWIFI();
+
+
+    /** 11. 等待WIFI指令 **/
+    //Task_WIFI();
+
+    delay_ms(1000);
+    Take_Process_Order[0] = Process_R;
+    Take_Process_Order[1] = Process_G;
+    Take_Process_Order[2] = Process_B;
+
+    Place_Finish_Order[0] = Finish_R;
+    Place_Finish_Order[1] = Finish_G;
+    Place_Finish_Order[2] = Finish_B;
+
+
+    /** 12. 先移动到对应色块线上再向左平移 **/
+    Strategy_Xaxis_Move(Place_Process_Order[2], Take_Process_Order[0], 25); // 先移动到指定色环线上
+
+    Task_MoveToGrab();  // 再左平移
+
+    // 第一次抓取动作
+    delay_Ntimes(2);
+
+
+    /** 13. 先移动到指定色块线上再向前移动 **/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[0], 20); // 移动到指定色块线
+
+    Strategy_Xaxis_Move(Take_Process_Order[0], 6, 25); // 向前移动
+
+    Car_TrackFront1(10);  // 速度应该较慢 后面加了延时无寻迹功能
+    delay_ms(1000);   // 适当延时
+    delay_ms(1000);   // 适当延时
+
+    Kinematic_Analysis(0, 0);  // 停止
+
+    // 第一次放置动作
+    delay_Ntimes(2);
+
+    /** 14. 先回到指定色块线上再向左平移**/
+    Strategy_Xaxis_Move(Position_Pad, Take_Process_Order[0], 20); // 移动到指定色块线
+
+    Strategy_Yaxis_Move(Place_Finish_Order[0], 5, 20); // 向左平移到加工区
+
+    Task_MoveToGrab();  // 再左平移
+
+    // 第二次抓取动作
+    delay_Ntimes(2);
+
+
+    /** 15. 先后退到指定色环线上再右移 **/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[1], 20); // 先后退到指定色环线上
+
+    Strategy_Xaxis_Move(Take_Process_Order[1], Position_Pad, 25); // 再右移
+
+
+    Car_TrackFront1(10);  // 速度应该较慢 后面加了延时无寻迹功能
+    delay_ms(1000);   // 适当延时
+    delay_ms(1000);   // 适当延时
+
+    Kinematic_Analysis(0, 0);  // 停止
+    // 第二次放置动作
+    delay_Ntimes(2);
+
+
+    /** 16. 先回到指定色块线上再向左平移 **/
+    Strategy_Xaxis_Move(7, Take_Process_Order[2], 20); // 移动到指定色块线
+
+    Strategy_Yaxis_Move(Place_Finish_Order[1], 5, 20); // 向左平移到加工区
+
+    Task_MoveToGrab();  // 再左平移
+
+    // 第三次抓取动作
+    delay_Ntimes(2);
+
+    /** 17. 先后退到指定色环线上再右移**/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[2], 20); // 先后退到指定色环线上
+
+    Strategy_Xaxis_Move(Take_Process_Order[2], Position_Pad, 25); // 再右移
+
+
+    Car_TrackFront1(15);  // 速度应该较慢 后面加了延时无寻迹功能
+    delay_ms(1000);   // 适当延时
+    delay_ms(1000);   // 适当延时
+
+    Kinematic_Analysis(0, 0);  // 停止
+
+    // 第三次放置动作
+    delay_Ntimes(2);
+
+
+    /** 18. 回到坐标1的线再向下平移 **/
+    Task_MoveBackHome();
+
+    Strategy_Yaxis_Move(Place_Finish_Order[2], 2, 20); // 向下平移
+
+    Task_Move1x1();
+}
+
+
+
+void Task_Test()
 {
     Task_MoveLeft();         // 左移到线上
     Task_MovePad();          // 寻迹到Pad
-    Task_Qrcode();           // 识别Qrcode
-    Task_MoveMaterials();    // 后退到物料
 
-    delay_Ntimes(1);
-    /* 第一次搬运 */
-    Action_Take_1(7);
-    Action_AfterTake(7);
-    if(angle_Place[0] == 90)Task_MoveToPlace2();
-    else Task_MoveToPlace();
-    Action_Place_1(7);
-    delay_Ntimes(1);
-    Action_AfterPlace(7);
-    delay_Ntimes(1);
-    Task_MoveFromPlaceToMaterials();
-
-    /* 第二次搬运 */
-    //Action_Take_2(7);
-    delay_Ntimes(1);
-    //Action_AfterTake(7);
-    if(angle_Place[1] == 90)Task_MoveToPlace2();
-    else Task_MoveToPlace();
-   // Action_Place_2(7);
-    delay_Ntimes(1);
-    //Action_AfterPlace(7);
-    delay_Ntimes(1);
-    Task_MoveFromPlaceToMaterials();
-
-
-    /* 第三次搬运 */
-    //Action_Take_3(7);
-    delay_Ntimes(1);
-    //Action_AfterTake(7);
-    if(angle_Place[2] == 90)Task_MoveToPlace2();
-    else Task_MoveToPlace();
-    //Action_Place_3(7);
-    delay_Ntimes(1);
-   // Action_AfterPlace(7);
-
-    delay_Ntimes(1);
-
-    Task_MoveStartPoint_4X3();
+    Task_Qrcode();           // 识别二维码
 }
-
 
 /*
 * @auther: Mrtutu
@@ -146,36 +293,6 @@ void Task_TestSensor(void)
 }
 
 
-/*
-* @auther: Mrtutu
-* @date  ：2019-02-21
-*
-* @func  : Task_test
-* @param : None
-* @return: None
-* @note  : Test 任务
-*
-*/
-void Task_TestPath(void)
-{
-    Task_MoveLeft();
-    delay_ms(100);
-    Task_MovePad();
-    delay_Ntimes(2);
-    Task_MoveMaterials();
-    delay_Ntimes(2);
-    Task_MoveMaterials();
-    delay_Ntimes(2);
-    Task_MoveFromPlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MoveMaterials();
-    delay_Ntimes(2);
-    Task_MoveFromPlaceToMaterials();
-    delay_Ntimes(2);
-    Task_MoveMaterials();
-    delay_Ntimes(2);
-    Task_MoveStartPoint_4X3();
-}
 
 
 /*
@@ -193,32 +310,11 @@ void Task_MoveLeft(void)
     COUNT_FRONT_L = 0;
     while(COUNT_FRONT_L != 2)
     {
-        Kinematic_Analysis(-20, 0);
+        Kinematic_Analysis(-18, 0);
     }
     Kinematic_Analysis(0, 0);
 }
 
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-05
-*
-* @func  : Task_MoveIncline
-* @param : None
-* @return: None
-* @note  : None
-*
-*/
-void Task_MoveIncline(void)
-{
-    COUNT_FRONT_L = 0;
-    while(COUNT_FRONT_L != 3)
-    {
-        Kinematic_Analysis(-20, 20);
-    }
-    Kinematic_Analysis(0, 0);
-}
 
 
 /*
@@ -234,12 +330,114 @@ void Task_MoveIncline(void)
 void Task_MovePad(void)
 {
     COUNT_RIGHT_U = 0;
-    while(COUNT_RIGHT_U != 6)
+    while(COUNT_RIGHT_U < 5)
     {
-        Car_TrackFront();
-        Strategy_MaterialColor();
+        Car_TrackFront1(40);
+        //Strategy_MaterialColor();
+    }
+    COUNT_RIGHT_U = 0;
+    while(COUNT_RIGHT_U < 1)
+    {
+        Car_TrackFront1(20);
+        //Strategy_MaterialColor();
     }
 
+    Kinematic_Analysis(0, 0);
+}
+
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-06
+*
+* @func  : Task_MoveProcess
+* @param : None
+* @return: None
+* @note  : None   向左平移到加工区
+*
+*/
+void Task_MoveProcess(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 2) // 12根线到加工区
+    {
+        Car_TrackLeft1(20);
+    }
+    
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 10) // 12根线到加工区
+    {
+        Car_TrackLeft1(40);
+    }
+
+    COUNT_FRONT_L = 0;
+    while(COUNT_FRONT_L < 1) // 12根线到加工区
+    {
+        Car_TrackLeft1(20);
+    }
+    Kinematic_Analysis(0, 0);
+
+}
+
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-06
+*
+* @func  : Task_MoveProcessToMaterial
+* @param : None
+* @return: None
+* @note  : None   从加工区向右平移到物料区
+*
+*/
+void Task_MoveProcessToMaterial(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 10) // 12根线到原料区
+    {
+        Car_TrackRight1(40);
+    }
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 2) // 12根线到原料区
+    {
+        Car_TrackRight1(15);
+    }
+    Kinematic_Analysis(0, 0);
+
+}
+
+
+
+void Task_PrepareForWIFI(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 2) // 向右移动两根线
+    {
+        Car_TrackRight1(20);
+    }
+
+    Kinematic_Analysis(0, 0);
+
+}
+
+
+
+void Task_MoveToGrab(void)
+{
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 2) // 向左移动两根线
+    {
+        Car_TrackLeft1(20);
+    }
+
+    COUNT_FRONT_L = 0;
+    while(COUNT_FRONT_L < 1) // 向左移动两根线
+    {
+        Car_TrackLeft1(20);
+    }
     Kinematic_Analysis(0, 0);
 }
 
@@ -261,156 +459,58 @@ void Task_Qrcode(void)
     while(FLAG_QR)Strategy_QrcodeSquence();
 }
 
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_MoveMaterials
-* @param : None
-* @return: None
-* @note  : None
-*
-*/
-void Task_MoveMaterials(void)
+
+void Task_WIFI(void)
+{
+    Kinematic_Analysis(0, 0);
+    while(FLAG_WIFI)Strategy_WIFISquence();
+}
+
+
+
+
+void Task_MoveBackHome(void)
 {
     COUNT_RIGHT_D = 0;
-    while(COUNT_RIGHT_D != 3)Car_TrackBack();
-
+    while(COUNT_RIGHT_D < 5)
+    {
+        Car_TrackBack1(40);
+    }
+    COUNT_RIGHT_D = 0;
+    while(COUNT_RIGHT_D < 1)
+    {
+        Car_TrackBack1(20);
+    }
     Kinematic_Analysis(0, 0);
+    
 }
 
 
 
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-04
-*
-* @func  : Task_MoveBackward
-* @param : None
-* @return: None
-* @note  : None
-*
-*/
-void Task_MoveBackward(void)
+void Task_Move1x1(void)
 {
-    COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 2)Kinematic_Analysis(-15, 0);
+    Kinematic_Analysis(15, -15);  // 斜走回来
 
-    Kinematic_Analysis(0, 0);
+    delay_ms(1000);
+    delay_ms(1000);
+    delay_ms(1000);
+    Kinematic_Analysis(0, 0); // 停止
 }
 
 
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_TakeMaterials
-* @param : None
-* @return: None
-* @note  : None 提取物料
-*
-*/
-void Task_TakeMaterials(void)
+
+void Task_SetAlarm(u16 s)
 {
-
+    counter = 0;
+    while(1)
+    {
+        if(counter > s)
+        {
+            Beep_ring();
+            break;
+        }
+    }
 }
-
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_PlaceMaterials
-* @param : None
-* @return: None
-* @note  : None  放置物料
-*
-*/
-void Task_PlaceMaterials(void)
-{
-
-}
-
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_MovePlaceToMaterials
-* @param : None
-* @return: None
-* @note  : None  平移到放置区
-*
-*/
-void Task_MoveToPlace(void)
-{
-    COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 4)Car_TrackLeft();
-
-    Kinematic_Analysis(0, 0);
-}
-
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-08
-*
-* @func  : Task_MoveToPlace2
-* @param : None
-* @return: None
-* @note  : None
-*
-*/
-void Task_MoveToPlace2(void)
-{
-    COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 3)Car_TrackLeft();
-
-    Kinematic_Analysis(0, 0);
-}
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_MoveFromPlaceToMaterials
-* @param : None
-* @return: None
-* @note  : None   从放置区平移到提取区
-*
-*/
-void Task_MoveFromPlaceToMaterials(void)
-{
-    COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R != 3)Car_TrackRight();
-
-    Kinematic_Analysis(0, 0);
-}
-
-
-
-/*
-* @auther: Mrtutu
-* @date  ：2019-03-03
-*
-* @func  : Task_MoveStartPoint_4X3
-* @param : None
-* @return: None
-* @note  : None   -20 / 11
-*
-*/
-void Task_MoveStartPoint_4X3(void)
-{
-    Kinematic_Analysis(30, -40);
-
-    delay_Ntimes(15);
-    Kinematic_Analysis(0, 0);
-}
-
 
 
 
@@ -431,6 +531,13 @@ void Task_OLED(void)
     OLED_ShowCHinese(32, 0, 5);
     OLED_ShowCHinese(48, 0, 6);
     OLED_ShowString(64, 0, ":");
+
+    /* WIFI */
+    OLED_ShowString(0, 6, "WIFI");
+    OLED_ShowCHinese(32, 6, 13);
+    OLED_ShowCHinese(48, 6, 14);
+    OLED_ShowString(64, 6, ":");
+
 }
 
 

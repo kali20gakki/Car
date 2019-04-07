@@ -29,14 +29,7 @@
 
 #include "sensor.h"
 #include "delay.h"
-
-extern u8 COUNT_FRONT_L;
-extern u8 COUNT_FRONT_R;
-extern u8 COUNT_LEFT_U;
-extern u8 COUNT_RIGHT_U;
-extern u8 COUNT_RIGHT_D;
-
-
+#include "includes.h"
 
 /*
 * @auther: Mrtutu
@@ -61,14 +54,14 @@ void Sensor_Track_Init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
     GPIO_Init(GPIOC, &GPIO_InitStructure);//初始化
-    /* GPIO_E 6*/
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    /* GPIO_E 5 6*/
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5|GPIO_Pin_6;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
     GPIO_Init(GPIOE, &GPIO_InitStructure);//初始化
-    /* GPIO_A 3 5*/
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_5;
+    /* GPIO_A 5*/
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//普通输入模式
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100M
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉

@@ -21,6 +21,7 @@
 #include "process.h"
 #include "string.h"
 #include "common.h"
+#include "oled.h"
 /*******************************************************************************
 * TCP/UDP Client 透传流程（首次连接）
 * 1. AT+CWMODE=1 //设置为 STA 模式      ------   响应 OK
@@ -48,6 +49,7 @@ void ESP8266_Set_Link()
 {
     while(ESP8266_send_cmd("AT+CWMODE=1", "OK", 500) == 1);		//设置WIFI STA模式
     // OLED DEBUG
+    OLED_ShowString(96,6,"1");
     /**连接路由器**/
     delay_ms(100);
 	sprintf((char*)p,"AT+CWJAP=\"%s\",\"%s\"",
@@ -55,20 +57,26 @@ void ESP8266_Set_Link()
                              wifista_password);
 	while(ESP8266_send_cmd((char*)p,"WIFI CONNECTED",500) == 1);
     // OLED DEBUG
+    OLED_ShowString(96,6,"2");
     delay_ms(100);
     
     /**连接 TCP/UDP 服务器**/
     sprintf((char*)p,"AT+CIPSTART=\"%s\",\"%s\",%s",MODE,IP_Adress,Port);
     while(ESP8266_send_cmd((char*)p,"CONNECT",500) == 1);
     // OLED DEBUG
+    OLED_ShowString(96,6,"3");
     /**设置透传模式**/
     while(ESP8266_send_cmd("AT+CIPMODE=1","OK",500) == 1);
     // OLED DEBUG
+    OLED_ShowString(96,6,"4");
     delay_ms(100);
     /**开始透传**/
     while(ESP8266_send_cmd("AT+CIPSEND","OK",500) == 1);
     //ESP8266_send_cmd("AT+CIPSEND","OK",100);
     // OLED DEBUG
+    OLED_ShowCHinese(80, 6, 12);
+    OLED_ShowCHinese(96, 6, 13);
+    OLED_ShowCHinese(112, 6, 14);
 }
 
 

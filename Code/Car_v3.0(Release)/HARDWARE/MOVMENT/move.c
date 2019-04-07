@@ -27,6 +27,9 @@
 /* 单精度浮点 7位有效 */
 const float PI_180 = 0.0174533f;         // PI/180 减少计算量
 
+
+const int V_Bias = 7;
+
 extern volatile int Target_A, Target_B, Target_C, Target_D;
 
 
@@ -109,7 +112,7 @@ void Car_SetMove(u8 velocity, float angle)
 * @func  : Car_TrackFront
 * @param : None
 * @return: None
-* @note  : 循迹直走  平移效果不佳，采用
+* @note  : 循迹直走  
 *
 */
 void Car_TrackFront(void)
@@ -248,4 +251,232 @@ void Car_TrackRight(void)
     }
 
 }
+
+
+
+void Car_TrackFrontSlow(void)
+{
+    if((SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0)) //没有偏离
+    {
+        Kinematic_Analysis(0, 20); // 直走
+    }
+    else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 1) // 左偏
+    {
+        /* 速度差5 */
+        Target_A = -20;
+        Target_B = -20;
+        Target_C =  15;
+        Target_D =  15;
+
+    }
+    else if(SENSOR_FRONT_L == 1 && SENSOR_FRONT_R == 0) // 右偏
+    {
+        Target_A = -15;
+        Target_B = -15;
+        Target_C =  20;
+        Target_D =  20;
+    }
+}
+
+
+
+void Car_TrackBackSlow(void)
+{
+    if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 0) // 没有偏离
+    {
+        Kinematic_Analysis(0, -20); // 后退
+    }
+    else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 左偏
+    {
+        /* 速度差5 */
+        Target_A =  20;
+        Target_B =  20;
+        Target_C = -25;
+        Target_D = -25;
+    }
+    else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 1) // 右偏
+    {
+        /* 速度差5 */
+        Target_A =  25;
+        Target_B =  25;
+        Target_C = -20;
+        Target_D = -20;
+    }
+}
+
+
+
+void Car_TrackLeftFast(void)
+{
+    if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 0) // 没有偏离
+    {
+        Kinematic_Analysis(-25, 0);
+    }
+    else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 0) // 上偏
+    {
+        /* 速度差5 */
+        Target_A = -30;
+        Target_B =  25;
+        Target_C =  25;
+        Target_D = -30;
+    }
+    else if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 1) // 下偏
+    {
+        /* 速度差5 */
+        Target_A = -25;
+        Target_B =  30;
+        Target_C =  30;
+        Target_D = -25;
+    }
+}
+
+
+
+void Car_TrackRightFast(void)
+{
+    if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 0) // 没有偏离
+    {
+        Kinematic_Analysis(25, 0);
+
+    }
+    else if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 1) // 上偏
+    {
+        /* 速度差5 */
+        Target_A =  25;
+        Target_B = -30;
+        Target_C = -30;
+        Target_D =  25;
+
+
+    }
+    else if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 0) // 下偏
+    {
+        /* 速度差5 */
+        Target_A =  30;
+        Target_B = -25;
+        Target_C = -25;
+        Target_D =  30;
+
+    }
+
+}
+
+
+void Car_Move3x3Sqr()
+{
+   Kinematic_Analysis(25, -25);
+   delay_Ntimes(5);
+   Kinematic_Analysis(0, 0);
+}
+
+
+
+void Car_TrackFront1(int V)
+{
+    if((SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 0)) //没有偏离
+    {
+        Kinematic_Analysis(0, V); // 直走
+    }
+    else if(SENSOR_FRONT_L == 0 && SENSOR_FRONT_R == 1) // 左偏
+    {
+        /* 速度差5 */
+        Target_A = -V;
+        Target_B = -V;
+        Target_C =  V-V_Bias;
+        Target_D =  V-V_Bias;
+
+    }
+    else if(SENSOR_FRONT_L == 1 && SENSOR_FRONT_R == 0) // 右偏
+    {
+        Target_A = -(V-V_Bias);
+        Target_B = -(V-V_Bias);
+        Target_C =  V;
+        Target_D =  V;
+    }
+}
+
+
+
+
+void Car_TrackBack1(int V)
+{
+    if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 0) // 没有偏离
+    {
+        Kinematic_Analysis(0, -V); // 后退
+    }
+    else if(SENSOR_BACK_L == 1 && SENSOR_BACK_R == 0) // 左偏
+    {
+        /* 速度差5 */
+        Target_A =  V-V_Bias;
+        Target_B =  V-V_Bias;
+        Target_C = -V;
+        Target_D = -V;
+    }
+    else if(SENSOR_BACK_L == 0 && SENSOR_BACK_R == 1) // 右偏
+    {
+        /* 速度差5 */
+        Target_A =  V;
+        Target_B =  V;
+        Target_C = -(V-V_Bias);
+        Target_D = -(V-V_Bias);
+    }
+}
+
+
+
+void Car_TrackLeft1(int V)
+{
+    if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 0) // 没有偏离
+    {
+        Kinematic_Analysis(-V, 0);
+    }
+    else if(SENSOR_LEFT_U == 1 && SENSOR_LEFT_D == 0) // 上偏
+    {
+        /* 速度差5 */
+        Target_A = -(V+V_Bias);
+        Target_B =      V;
+        Target_C =      V;
+        Target_D = -(V+V_Bias);
+    }
+    else if(SENSOR_LEFT_U == 0 && SENSOR_LEFT_D == 1) // 下偏
+    {
+        /* 速度差5 */
+        Target_A = -V;
+        Target_B =  V+V_Bias;
+        Target_C =  V+V_Bias;
+        Target_D = -V;
+    }
+}
+
+
+
+void Car_TrackRight1(int V)
+{
+    if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 0) // 没有偏离
+    {
+        Kinematic_Analysis(V, 0);
+
+    }
+    else if(SNESOR_RIGHT_U == 0 && SNESOR_RIGHT_D == 1) // 上偏
+    {
+        /* 速度差5 */
+        Target_A =  V;
+        Target_B = -(V + V_Bias);
+        Target_C = -(V + V_Bias);
+        Target_D =  V;
+
+
+    }
+    else if(SNESOR_RIGHT_U == 1 && SNESOR_RIGHT_D == 0) // 下偏
+    {
+        /* 速度差5 */
+        Target_A =  (V + V_Bias);
+        Target_B = -V;
+        Target_C = -V;
+        Target_D =  (V + V_Bias);
+
+    }
+
+}
+
 /********************************End of File************************************/

@@ -49,27 +49,36 @@
 #include "uart5.h"
 #include "action.h"
 #include "task.h"
+#include "usart2.h"
+
 
 /********************************全局变量***************************************/
 volatile int Motor_A, Motor_B, Motor_C, Motor_D;      // PI算法返回赋值 临时PWM值
 volatile int Encoder_A, Encoder_B, Encoder_C, Encoder_D; // 编码器返回赋值
 volatile int Target_A, Target_B, Target_C, Target_D;  // 目标速度
 
-u8 key;
 
-/* 计数器 */
+/******************************* 计数器 ***************************************/
 volatile u8 COUNT_FRONT_L;
 volatile u8 COUNT_FRONT_R;
 volatile u8 COUNT_LEFT_U;
 volatile u8 COUNT_RIGHT_U;
 volatile u8 COUNT_RIGHT_D;
+
+volatile u16 counter;
+
+u8 key;
+u16 x;
+
 /*******************************************************************************/
 
 /**********************************标志位***************************************/
 
+
+
+
+
 /*******************************************************************************/
-
-
 
 
 int main(void)
@@ -79,10 +88,12 @@ int main(void)
     delay_init(168);	    	                     // 延时函数初始化
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	 // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级
     usart3_Init(9600);                               // OpenMV
-    uart5_Init(9600);                                // 串口5
+    usart2_Init(9600);                               // 串口2  NodeMCU
+    uart5_Init(115200);                              // 串口5
     TIM9_Int_Init(100 - 1, 8400 - 1);	             // 10ms中断一次
     Servo_Init(10000 - 1, 56 - 1);                   // 舵机PWM频率为300Hz
     TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms
+    //TIM13_Int_Init(16800 - 1, 5000 - 1);           // TIM13 溢出时间： 1s
     Motor_Init(1000 - 1, 42 - 1);                    // 电机PWM频率为2KHz
     Motor_Pin_Init();                                // 电机方向控制引脚初始化
     Encoder_MotorA_Init();                           // 电机A编码器初始化
@@ -98,35 +109,82 @@ int main(void)
 
     /****************************初始化动作***************************************************/
 
-    PlaceColor_Init(321);
-    //Action_First();
-    OLED_ShowCHinese(80, 0, 1);
-    OLED_ShowCHinese(96, 0, 2);
-    OLED_ShowCHinese(112, 0, 3);
-    //Action_Test();
+//  //Action_Test();
+    Strategy_ProcessColorInit(1);
+    Strategy_FinishColorInit(1);
     Task_OLED();
+    Servo1_SpeedRegulation(106, 10);
+    Servo2_SpeedRegulation(115, 10);
+    Servo3_SpeedRegulation(145, 10);
+    Servo4_SpeedRegulation(85, 10);
+    
+    
+    Servo4_SpeedRegulation(40, 10);
+    
+    
     /*****************************************************************************************/
+
+
+    USART2_RX_STA = 0;
+    for(x = 0; x<USART2_MAX_RECV_LEN; x++)
+    {
+        USART2_RX_BUF[x];
+    }
+    OLED_ShowString(80,6,"8");
+    //NodeMCU_Link();
     while(1)
     {
         key = KEY_Scan(0);
         if(key == 1)
         {
-            COUNT_FRONT_L = 0;
-            Task_Full();
+            Task_Release();
             while(1);
         }
-        else if(key == 2) 
+        else if(key == 2)
         {
-           Task_TestSensor();
+            Task_Test();
+            while(1);
         }
         else if(key == 3)
         {
-           Servo1_SpeedRegulation(30, 15);
-           Servo2_SpeedRegulation(0, 15);
-           Servo3_SpeedRegulation(85, 15);
-           Servo4_SpeedRegulation(90, 15);
+            while(1)Task_TestSensor();
         }
 
+
+//        Servo4_SpeedRegulation(0, 20);
+//        delay_ms(500);
+//        delay_ms(500);
+//        Servo4_SpeedRegulation(180, 20);
+//        delay_ms(500);
+//        delay_ms(500);
+
+
+//          OLED_ShowNum(80,6,counter);
+//          if(counter > 20)
+//          {
+//              Beep_ring();
+//              counter = 0;
+//          }
+
+//        key = KEY_Scan(0);
+//        if(key == 1)
+//        {
+//            OLED_ShowString(80, 6, "1");
+//        }
+//        else if(key == 2)
+//        {
+//            OLED_ShowString(80, 6, "2");
+//        }
+//        else if(key == 3)
+//        {
+//            OLED_ShowString(80, 6, "3");
+//        }
+
+
+//        Servo3_SpeedRegulation(0, 20);
+//        delay_Ntimes(2);
+//        Servo3_SpeedRegulation(180, 20);
+//        delay_Ntimes(2);
     }
 }
 
