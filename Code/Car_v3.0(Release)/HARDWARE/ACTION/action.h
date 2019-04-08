@@ -23,21 +23,12 @@
 #define __ACTION_H_
 #include "sys.h"
 
-void Action_First(void);
-
-void Action_Take_1(u8 time);
-void Action_Take_2(u8 time);
-void Action_Take_3(u8 time);
-
-void Action_AfterTake(u8 time);
-
-void Action_Place_1(u8 time);
-void Action_Place_2(u8 time);
-void Action_Place_3(u8 time);
-
-void Action_AfterPlace(u8 time);
-
-void action_Test(void);
+void Action_FindBlob(void);
+void Action_FindQrcode(void);
+void Action_AfterQrcode(void);
+void Action_3(void);
+void Action_4(void);
+void Action_5(void);
 #endif
 
 /********************************End of File************************************/

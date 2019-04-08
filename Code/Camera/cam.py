@@ -22,7 +22,7 @@ sensor.reset()
 sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QVGA)
 sensor.skip_frames(time = 2000) # 跳过一些帧
-sensor.set_auto_gain(True) # 自动增益打开
+sensor.set_auto_gain(False) # 自动增益打开
 sensor.set_auto_whitebal(False) # 白平衡关闭
 
 led = pyb.LED(3) #蓝灯

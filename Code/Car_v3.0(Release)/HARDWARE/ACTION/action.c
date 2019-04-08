@@ -46,6 +46,49 @@
 #include "strategy.h"
 
 
+void Action_FindBlob(void)
+{
+    Servo1_SpeedRegulation(60,10);
+    Servo2_SpeedRegulation(60, 10);
+    Servo3_SpeedRegulation(180, 10);
+    Servo4_SpeedRegulation(40, 10);
+}
+
+
+void Action_FindQrcode(void)
+{
+    Servo1_SpeedRegulation(60,10);
+    Servo3_SpeedRegulation(145, 10);
+    Servo2_SpeedRegulation(115, 10);
+    Servo4_SpeedRegulation(40, 10);
+}
+
+
+void Action_AfterQrcode(void)
+{
+    Servo1_SpeedRegulation(60,10);
+    Servo2_SpeedRegulation(60, 10);//60
+    Servo3_SpeedRegulation(180, 10);
+    Servo4_SpeedRegulation(40, 10);
+}
+
+
+
+void Action_3(void)
+{
+    
+}
+
+
+void Action_4(void)
+{
+    
+}
+
+void Action_5(void)
+{
+    
+}
 
 
 /********************************End of File************************************/

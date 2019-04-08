@@ -68,7 +68,7 @@ volatile u8 COUNT_RIGHT_D;
 volatile u16 counter;
 
 u8 key;
-u16 x;
+
 
 /*******************************************************************************/
 
@@ -92,6 +92,7 @@ int main(void)
     uart5_Init(115200);                              // 串口5
     TIM9_Int_Init(100 - 1, 8400 - 1);	             // 10ms中断一次
     Servo_Init(10000 - 1, 56 - 1);                   // 舵机PWM频率为300Hz
+    //TIM12_PWM_Init(10000 - 1, 56 - 1);               // 
     TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms
     //TIM13_Int_Init(16800 - 1, 5000 - 1);           // TIM13 溢出时间： 1s
     Motor_Init(1000 - 1, 42 - 1);                    // 电机PWM频率为2KHz
@@ -113,25 +114,12 @@ int main(void)
     Strategy_ProcessColorInit(1);
     Strategy_FinishColorInit(1);
     Task_OLED();
-    Servo1_SpeedRegulation(106, 10);
-    Servo2_SpeedRegulation(115, 10);
-    Servo3_SpeedRegulation(145, 10);
-    Servo4_SpeedRegulation(85, 10);
-    
-    
+    Servo1_SpeedRegulation(60,30);
+    Servo2_SpeedRegulation(60, 10);//60
+    Servo3_SpeedRegulation(180, 10);
     Servo4_SpeedRegulation(40, 10);
-    
-    
     /*****************************************************************************************/
-
-
-    USART2_RX_STA = 0;
-    for(x = 0; x<USART2_MAX_RECV_LEN; x++)
-    {
-        USART2_RX_BUF[x];
-    }
-    OLED_ShowString(80,6,"8");
-    //NodeMCU_Link();
+    usart2_Clear();
     while(1)
     {
         key = KEY_Scan(0);
@@ -149,8 +137,7 @@ int main(void)
         {
             while(1)Task_TestSensor();
         }
-
-
+        
 //        Servo4_SpeedRegulation(0, 20);
 //        delay_ms(500);
 //        delay_ms(500);

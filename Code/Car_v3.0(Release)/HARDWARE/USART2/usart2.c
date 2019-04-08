@@ -30,6 +30,7 @@ __align(8) u8 USART2_TX_BUF[USART2_MAX_SEND_LEN];
 u16 USART2_RX_STA = 0; //接收状态标记
 /****************************************************************/
 
+u8 flag = 1;
 
 
 
@@ -64,7 +65,7 @@ void usart2_Init(u32 bound)
     GPIO_Init(GPIOA, &GPIO_InitStructure);                    //初始化
     /*串口中断初始化*/
     USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);            //开启接收中断
-    NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;         //串口1中断通道
+    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;         //串口2中断通道
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1; //抢占优先级3 数值越小优先级越高
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;        //子优先级3,响应优先级
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;           //IRQ通道使能
@@ -81,11 +82,18 @@ void usart2_Init(u32 bound)
 }
 
 
-
+void usart2_Clear()
+{
+    u16 x;
+    USART2_RX_STA = 0;
+    for(x=0;x<USART2_MAX_RECV_LEN;x++)
+    {
+        USART2_RX_BUF[x] = 0;
+    }
+}
 
 void NodeMCU_Link(void)
 {
-    static u8 flag = 1;
     while(flag) // 连接wifi
     {
         if(USART2_RX_STA & 0x8000) 
@@ -97,6 +105,7 @@ void NodeMCU_Link(void)
             }
         }
     }
+    flag = 1;
     
     while(flag) // 连接IP
     {

@@ -28,6 +28,7 @@
 #include "string.h"
 #include "beep.h"
 #include "math.h"
+#include "action.h"
 
 volatile u16 QrcodeNum;
 volatile u8 FLAG_QR = 1;
@@ -63,6 +64,13 @@ volatile int Process_B;
 volatile int Finish_R;
 volatile int Finish_G;
 volatile int Finish_B;
+
+
+
+/** 抓取动作函数指针 **/
+void(*pAction1)(void);
+void(*pAction2)(void);
+void(*pAction3)(void);
 
 /*********************************************************************************************/
 
@@ -321,6 +329,10 @@ void Strategy_QrcodeSquence(void)
             Place_Process_Order[0] = Process_R;
             Place_Process_Order[1] = Process_G;
             Place_Process_Order[2] = Process_B;
+            
+            pAction1 = Action_3;
+            pAction2 = Action_4;
+            pAction3 = Action_5;
 
             OLED_ShowCHinese(80, 0, 1);
             OLED_ShowCHinese(96, 0, 2);
@@ -341,6 +353,10 @@ void Strategy_QrcodeSquence(void)
             Place_Process_Order[0] = Process_R;
             Place_Process_Order[1] = Process_B;
             Place_Process_Order[2] = Process_G;
+            
+            pAction1 = Action_3;
+            pAction2 = Action_4;
+            pAction3 = Action_5;
 
             OLED_ShowCHinese(80, 0, 1);
             OLED_ShowCHinese(96, 0, 3);
@@ -615,4 +631,5 @@ void Strategy_Yaxis_Move(int y0, int y1, int V)
     }
     
 }
+
 /********************************End of File************************************/

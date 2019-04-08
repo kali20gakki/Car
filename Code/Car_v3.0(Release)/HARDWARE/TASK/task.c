@@ -82,20 +82,18 @@ void Task_Release(void)
     /** 2. 向前移动到Pad以及识别物料颜色顺序 **/
     Task_MovePad();
 
-    Position_G = 3;
-    Position_R = 4;
-    Position_B = 5;
 
     /** 3. 识别二维码 **/
-    //Task_Qrcode();
+    Servo1_SpeedRegulation(60,30);
+    Servo3_SpeedRegulation(145, 10);
+    Servo2_SpeedRegulation(115, 10);//60
+    Servo4_SpeedRegulation(40, 10);
+    Task_Qrcode();
+    Servo1_SpeedRegulation(60,30);
+    Servo2_SpeedRegulation(60, 10);//60
+    Servo3_SpeedRegulation(180, 10);
+    Servo4_SpeedRegulation(40, 10);
 
-    Take_Material_Order[0] = Position_R;
-    Take_Material_Order[1] = Position_G;
-    Take_Material_Order[2] = Position_B;
-
-    Place_Process_Order[0] = Process_R;
-    Place_Process_Order[1] = Process_G;
-    Place_Process_Order[2] = Process_B;
 
     delay_Ntimes(2);
 
@@ -153,16 +151,7 @@ void Task_Release(void)
 
 
     /** 11. 等待WIFI指令 **/
-    //Task_WIFI();
-
-    delay_ms(1000);
-    Take_Process_Order[0] = Process_R;
-    Take_Process_Order[1] = Process_G;
-    Take_Process_Order[2] = Process_B;
-
-    Place_Finish_Order[0] = Finish_R;
-    Place_Finish_Order[1] = Finish_G;
-    Place_Finish_Order[2] = Finish_B;
+    Task_WIFI();
 
 
     /** 12. 先移动到对应色块线上再向左平移 **/
@@ -333,13 +322,13 @@ void Task_MovePad(void)
     while(COUNT_RIGHT_U < 5)
     {
         Car_TrackFront1(40);
-        //Strategy_MaterialColor();
+        Strategy_MaterialColor();
     }
     COUNT_RIGHT_U = 0;
     while(COUNT_RIGHT_U < 1)
     {
         Car_TrackFront1(20);
-        //Strategy_MaterialColor();
+        Strategy_MaterialColor();
     }
 
     Kinematic_Analysis(0, 0);

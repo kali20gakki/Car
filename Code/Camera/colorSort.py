@@ -12,6 +12,7 @@ flagG = 1
 flagB = 1
 flagReverse = 1
 flagEN = 1
+flagQrcode = 1
 
 counter = 0
 
@@ -107,10 +108,11 @@ while(True):
                     CL = i + CL
                 flagReverse = 0
             print(CL)
-            uart.write(CL+"\r\n")
+            print(colorStr)
+            uart.write(colorStr+"\r\n")
             #time.sleep(200)
             counter = counter+1
             if(counter > 0):flagEN = 0 # 发送一次
-    else:qrcode_recognition()
+    else:qrcode_recognition()   # 识别二维码
 
 
