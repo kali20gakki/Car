@@ -41,6 +41,8 @@ void Task_MoveStartPoint_4X3(void);
 void Task_OLED(void);
 void Task_WIFI(void);
 void Task_MoveProcess(void);
+void Task_MoveMidMaterial(void);
+void Task_PlaceFinish(void);
 void Task_MoveProcessToMaterial(void);
 void Task_PrepareForWIFI(void);
 void Task_MoveToGrab(void);

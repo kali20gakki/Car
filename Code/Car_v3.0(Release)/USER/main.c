@@ -66,7 +66,7 @@ volatile u8 COUNT_RIGHT_U;
 volatile u8 COUNT_RIGHT_D;
 
 volatile u16 counter;
-
+volatile u16 TIME;
 u8 key;
 
 
@@ -89,12 +89,13 @@ int main(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	 // 设置NVIC中断分组2:2位抢占优先级，2位响应优先级
     usart3_Init(9600);                               // OpenMV
     usart2_Init(9600);                               // 串口2  NodeMCU
-    uart5_Init(115200);                              // 串口5
+    //uart5_Init(115200);                              // 串口5
     TIM9_Int_Init(100 - 1, 8400 - 1);	             // 10ms中断一次
     Servo_Init(10000 - 1, 56 - 1);                   // 舵机PWM频率为300Hz
-    //TIM12_PWM_Init(10000 - 1, 56 - 1);               // 
-    TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms
-    //TIM13_Int_Init(16800 - 1, 5000 - 1);           // TIM13 溢出时间： 1s
+    TIM12_PWM_Init(10000 - 1, 28 - 1);               //
+    TIM7_Int_Init(200 - 1, 8400 - 1);                // TIM7 定时中断时间为：10ms ---- PID
+    TIM13_Int_Init(16800 - 1, 5000 - 1);             // TIM13 溢出时间： 1s ---- 计时3分钟
+    TIM11_Int_Init(16800 - 1, 1000 - 1);             // TIM11 溢出时间： 100ms ---- 延时定位
     Motor_Init(1000 - 1, 42 - 1);                    // 电机PWM频率为2KHz
     Motor_Pin_Init();                                // 电机方向控制引脚初始化
     Encoder_MotorA_Init();                           // 电机A编码器初始化
@@ -110,14 +111,10 @@ int main(void)
 
     /****************************初始化动作***************************************************/
 
-//  //Action_Test();
     Strategy_ProcessColorInit(1);
     Strategy_FinishColorInit(1);
     Task_OLED();
-    Servo1_SpeedRegulation(60,30);
-    Servo2_SpeedRegulation(60, 10);//60
-    Servo3_SpeedRegulation(180, 10);
-    Servo4_SpeedRegulation(40, 10);
+    Action_FindBlob();
     /*****************************************************************************************/
     usart2_Clear();
     while(1)
@@ -125,18 +122,25 @@ int main(void)
         key = KEY_Scan(0);
         if(key == 1)
         {
-            Task_Release();
+            //Task_Release();
+            Task_MoveProcess();
             while(1);
         }
         else if(key == 2)
         {
-            Task_Test();
+            TIME = 0;
+            TIM_Cmd(TIM13, ENABLE); //使能定时器 7
+            Task_Debug();
             while(1);
         }
         else if(key == 3)
         {
-            while(1)Task_TestSensor();
+            //Task_MoveProcessToMaterial();
+            //while(1);
+            //while(1)Task_TestSensor();
         }
+        //Car_TrackBack1(1500);
+        //Car_TrackRight();
         
 //        Servo4_SpeedRegulation(0, 20);
 //        delay_ms(500);
@@ -172,6 +176,7 @@ int main(void)
 //        delay_Ntimes(2);
 //        Servo3_SpeedRegulation(180, 20);
 //        delay_Ntimes(2);
+
     }
 }
 

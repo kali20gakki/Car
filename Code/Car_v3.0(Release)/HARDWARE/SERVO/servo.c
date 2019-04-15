@@ -1,3 +1,5 @@
+
+
 /********************************Copyright (c)**********************************\
 **
 **                   (c) Copyright 2019, Main, China, Mrtutu.
@@ -30,11 +32,12 @@
 #include "math.h"
 
 const float K = 33.333333f;  // PWM公式系数
-
-static int servo1_last_angle = 59;
-static int servo2_last_angle = 59;
-static int servo3_last_angle = 178;
-static int servo4_last_angle = 41;
+const int X = 20;
+static int servo1_last_angle = 81;
+static int servo2_last_angle = 51;
+static int servo3_last_angle = 180;
+static int servo4_last_angle = 81;
+static int servo5_last_angle = 91;
 
 
 /*
@@ -161,8 +164,8 @@ void TIM12_PWM_Init(u16 arr, u16 psc)
 void Servo1_SetAngle(int angle)
 {
     int pwm_value;
-    if(angle < 0 || angle > 301)return;
-    pwm_value = K * angle + 1500;
+    if(angle < 0 || angle > 300)return;
+    pwm_value = X * angle + 1500;
     TIM_SetCompare4(TIM1, pwm_value);
 }
 
@@ -225,6 +228,14 @@ void Servo4_SetAngle(int angle)
 }
 
 
+
+void Servo5_SetAngle(int angle)
+{
+    int pwm_value;
+    if(angle < 0 || angle > 180)return;
+    pwm_value = K * angle + 1500;
+    TIM_SetCompare1(TIM12, pwm_value);
+}
 
 /*
 * @auther: Mrtutu
@@ -374,4 +385,31 @@ void Servo4_SpeedRegulation(int next_angle, u8 time)
     }
 }
 
+
+
+
+void Servo5_SpeedRegulation(int next_angle, u8 time)
+{
+    int N;
+    int i;
+    N  = abs(next_angle - servo5_last_angle);
+    if(servo5_last_angle < next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo5_last_angle += 1;
+            Servo5_SetAngle(servo5_last_angle);
+            delay_ms(time);
+        }
+    }
+    if(servo5_last_angle > next_angle)
+    {
+        for(i = 0; i < N; i++)
+        {
+            servo5_last_angle -= 1;
+            Servo5_SetAngle(servo5_last_angle);
+            delay_ms(time);
+        }
+    }
+}
 /********************************End of File************************************/

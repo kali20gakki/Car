@@ -67,20 +67,12 @@ volatile int Finish_B;
 
 
 
-/** 抓取动作函数指针 **/
-void(*pAction1)(void);
-void(*pAction2)(void);
-void(*pAction3)(void);
-
 /*********************************************************************************************/
 
 extern u8 COUNT_FRONT_L;
 extern u8 COUNT_FRONT_R;
 extern u8 COUNT_RIGHT_U;
 extern u8 COUNT_RIGHT_D;
-
-
-
 
 /*
 * @auther: Mrtutu
@@ -269,15 +261,15 @@ void Strategy_MaterialColor(void)
             usart2_printf("识别到的物料颜色 : BRG?");
             Beep_ring();
         }
-        else if(strcmp(USART3_RX_BUF, "GBR") == 0)
+        else if(strcmp(USART3_RX_BUF, "GBR") == 0) // 绿蓝红
         {
             Position_R = 5;
             Position_G = 3;
             Position_B = 4;
 
-            OLED_ShowCHinese(80, 3, 3);
-            OLED_ShowCHinese(96, 3, 1);
-            OLED_ShowCHinese(112, 3, 2);
+            OLED_ShowCHinese(80, 3, 2);
+            OLED_ShowCHinese(96, 3, 3);
+            OLED_ShowCHinese(112, 3, 1);
             
             usart2_printf("识别到的物料颜色 : GBR?");
             Beep_ring();
@@ -329,10 +321,6 @@ void Strategy_QrcodeSquence(void)
             Place_Process_Order[0] = Process_R;
             Place_Process_Order[1] = Process_G;
             Place_Process_Order[2] = Process_B;
-            
-            pAction1 = Action_3;
-            pAction2 = Action_4;
-            pAction3 = Action_5;
 
             OLED_ShowCHinese(80, 0, 1);
             OLED_ShowCHinese(96, 0, 2);
@@ -353,10 +341,6 @@ void Strategy_QrcodeSquence(void)
             Place_Process_Order[0] = Process_R;
             Place_Process_Order[1] = Process_B;
             Place_Process_Order[2] = Process_G;
-            
-            pAction1 = Action_3;
-            pAction2 = Action_4;
-            pAction3 = Action_5;
 
             OLED_ShowCHinese(80, 0, 1);
             OLED_ShowCHinese(96, 0, 3);
@@ -579,7 +563,7 @@ void Strategy_Xaxis_Move(int x0, int x1, int V)
         {
             Car_TrackFront1(V);
         }
-        
+        usart2_printf("传感器计数%d?",COUNT_RIGHT_U);
         Kinematic_Analysis(0, 0);  // 停止
     }
     else if(TEMP < 0) // 向x轴负向移动(向后寻迹)  ---  COUNT_RIGHT_D
@@ -589,7 +573,7 @@ void Strategy_Xaxis_Move(int x0, int x1, int V)
         {
             Car_TrackBack1(V);
         }
-        
+        usart2_printf("传感器计数%d?",COUNT_RIGHT_D);
         Kinematic_Analysis(0, 0);  // 停止
     }
     else if(TEMP == 0) // 不移动
@@ -612,7 +596,7 @@ void Strategy_Yaxis_Move(int y0, int y1, int V)
         {
             Car_TrackLeft1(V);
         }
-        
+        usart2_printf("传感器计数%d?",COUNT_FRONT_L);
         Kinematic_Analysis(0, 0);  // 停止
     }
     else if(TEMP < 0)  // 向y轴的负向移动（向右寻迹）  ---  COUNT_FRONT_R
@@ -622,6 +606,7 @@ void Strategy_Yaxis_Move(int y0, int y1, int V)
         {
             Car_TrackRight1(V);
         }
+         usart2_printf("传感器计数%d?",COUNT_FRONT_R);
         Kinematic_Analysis(0, 0);  // 停止
     }
     else if(TEMP == 0)

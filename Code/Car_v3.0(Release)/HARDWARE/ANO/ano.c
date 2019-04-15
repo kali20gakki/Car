@@ -20,7 +20,7 @@
 \********************************End of Head************************************/
 
 #include "ano.h"
-#include "usart3.h"
+#include "uart5.h"
 #include "math.h"
 
 
@@ -34,10 +34,10 @@
 * @note  : None
 *
 */
-void usart3_send_char(u8 c)
+void usart5_send_char(u8 c)
 {
-    while((USART3->SR & 0X40) == 0); //等待上一次发送完毕
-    USART3->DR = c;
+    while((UART5->SR & 0X40) == 0); //等待上一次发送完毕
+    UART5->DR = c;
 }
 
 
@@ -81,6 +81,6 @@ void ANO_Send_Data(int target, int Encoder)
 
     send_buf[_cnt++] = sum;	//将sum校验数据放置最后一字节
 
-    for(i = 0; i < _cnt; i++)usart3_send_char(send_buf[i]);
+    for(i = 0; i < _cnt; i++)uart5_send_char(send_buf[i]);
 }
 /********************************End of File************************************/

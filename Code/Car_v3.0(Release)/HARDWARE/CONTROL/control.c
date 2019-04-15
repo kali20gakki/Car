@@ -31,8 +31,8 @@
 extern volatile int Motor_A,Motor_B,Motor_C,Motor_D;         // PI算法返回赋值 临时PWM值
 
 /* PI 速度控制器 参数定义 */
-volatile float Kp = 10.0f;
-volatile float Ki = 10.0f;
+volatile float Kp = 1.0f;
+volatile float Ki = 0.1f;
 
 
 

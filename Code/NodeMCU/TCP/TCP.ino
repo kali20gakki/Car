@@ -8,7 +8,7 @@ String comdata = "";         // com 数据缓冲
 
 const char *ssid     = "zhangwei";
 const char *password = "12345678";
-const char *host     = "192.168.43.1";
+const char *host     = "192.168.179.82";
 const int   Port     =  8888;
 
 char buff[3];

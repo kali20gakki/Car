@@ -1,0 +1,61 @@
+*********************************************************************************************************
+*	                                  
+*	版    本 : V1.0
+*	说    明 : uCOS-III操作系统版本的二代示波器
+*              实验目的：
+*                1. 学习uCOS-III操作系统版本的二代示波器实现。
+*              实验内容：
+*                1. 关于示波器的讲解和代码实现请看本实例配套的二代示波器教程。
+*                2. 默认情况下K1按键是用于触摸校准的，如果需要用于打印任务执行情况，需要在MainTask.c文件
+*                   的函数DSO_Graph里面使能相应的条件编译。使能后全编译工程，下载到板子里面按下按键K1可以
+*                   通过串口打印任务执行情况（波特率115200，数据位8，奇偶校验位无，停止位1）
+*                   ===============================================================
+*                     优先级 使用栈 剩余栈 百分比 利用率   任务名
+*                      Prio   Used  Free   Per    CPU     Taskname
+*                        2    180    844   17%    4.63%   App Task DSO
+*                       28    303    721   29%   69.48%   App Task GUI
+*                        5     35    477   06%    0.00%   App Task UserIF
+*                        4     91    421   17%    0.00%   App Task MsgPro
+*                        3     85    427   16%    1.36%   App Task Start
+*                       29     53     75   41%    0.00%   uC/OS-III Timer Task
+*                       30     45     55   45%    0.17%   uC/OS-III Stat Task
+*                        1     46     82   35%    0.79%   uC/OS-III Tick Task
+*                       31     33     95   25%   23.53%   uC/OS-III Idle Task
+*                    串口软件建议使用SecureCRT（V6光盘里面有此软件）查看打印信息。
+*                    App Task DSO任务    ：双通道示波器数据处理任务。
+*                    App Task Start任务  ：实现按键和触摸扫描。
+*                    App Task MsgPro任务 ：实现截图功能，将图片以BMP格式保存到SD卡中。
+*                    App Task UserIF任务 ：保留，暂时未用到。
+*                    App Task GUI任务    ：GUI任务。
+*              注意事项：
+*                 1. 如果用户通过MDK或者IAR编译器开启FPU，那么使用了浮点运算的任务在创建的时候
+*                    务必要使能参数OS_OPT_TASK_SAVE_FP，切记！！没有用到浮点运算的任务不需要此参数，
+*                    设置了此参数才可以对浮点寄存器进行入栈和出栈操作。
+*                 2. 为了支持uC/Probe调试组件:
+*                      (1).MDK要勾选option->output -> Debug Infomation选项，选择优化等级0
+*                      (2).IAR要选择选择优化等级low，其中如下两个地方比勾选
+*                        a. option->C/C++ Compiler->Output选项中勾选Generate debug information。
+*                        b. option->linker->Output选项中勾选Include Generate debug information in output。
+*                      (3).使能uCOS-III宏定义
+*                          #define OS_CFG_DBG_EN             1u
+*                      	   #define OS_CFG_STAT_TASK_EN       1u 同时初始化统计任务
+*                      	   #define CPU_CFG_INT_DIS_MEAS_EN   1u 
+*                      (4).为了方便调试，参数OS_CFG_APP_HOOKS_EN，OS_CFG_ARG_CHK_EN都使能
+*                 3. 本实验推荐使用串口软件SecureCRT，要不串口打印效果不整齐。此软件在
+*                    V6开发板光盘里面有。
+*                 4. 务必将编辑器的缩进参数和TAB设置为4来阅读本文件，要不代码显示不整齐。
+*
+*	修改记录 :
+*		版本号   日期         作者            说明
+*       V1.0    2018-01-06   Eric2013    1. ST固件库1.6.1版本
+*                                        2. BSP驱动包V1.2
+*                                        3. uCOS-III版本V3.05.00
+*                                        4. uC/CPU版本V1.30.02
+*                                        5. uC/LIB版本V1.38.01
+*                                        6. FatFS版本V0.11a
+*                                        7. STemWin版本V5.40
+*                                        8. DSP库版本V1.5.2
+*                                       
+*	Copyright (C), 2018-2028, 安富莱电子 www.armfly.com
+*
+*********************************************************************************************************

@@ -1,0 +1,36 @@
+V1.0    2016-02-18   Eric2013     首发
+--------------------------------------------
+1. uCOS-III的源码文件不再从官网下载（官网给的纯源码版本低），直接从MDK5的安装包里面获取，源码和移植文件比较全面且最新。
+2. FPU的解决方案采用官方的解决方案，不再使用我们自己写的FPU解决方案，方便以后的升级。
+   如果用户通过MDK或IAR编译器开启FPU的话，在MDK和IAR的启动文件中将执行（通过条件编译实现）：
+   a. 使能FPU.
+   b. 关闭浮点寄存器自动入栈。
+   c. 关闭lazy_stacking特性。
+3. MDK4.74选择1,2,3级优化的时候，uC/LIB会有一处警告：
+   ..\..\uCOS-III\uC-LIB\lib_str.c(3472): warning: C4017W: nbr_neg_fmtd may be used before being set
+   而IAR7.5选择最高优化是无警告的，MDK5.17也无警告。
+4. 为了支持uC/Probe调试组件:
+   (1).MDK要勾选option->output -> Debug Infomation选项，选择优化等级0
+   (2).IAR要选择选择优化等级low，其中如下两个地方比勾选
+       a. option->C/C++ Compiler->Output选项中勾选Generate debug information。
+       b. option->linker->Output选项中勾选Include Generate debug information in output。
+   (3).使能uCOS-III宏定义
+       #define OS_CFG_DBG_EN             1u
+	   #define OS_CFG_STAT_TASK_EN       1u 同时初始化统计任务
+	   #define CPU_CFG_INT_DIS_MEAS_EN   1u 
+   (4).为了方便调试，参数OS_CFG_APP_HOOKS_EN，OS_CFG_ARG_CHK_EN都使能
+       
+5. IAR用的icf配置文件是直接从IAR的安装目录复制过来修改了文件名。
+
+===========================
+V2.0    2018-01-06   Eric2013   使用此工程做二代示波器模板
+
+MDK4.74选择1,2,3级优化的时候，uC/LIB会有一处警告：
+uC/LIB会有一处警告：
+   ..\..\uCOS-III\uC-LIB\lib_str.c(3472): warning: C4017W: nbr_neg_fmtd may be used before being set
+   
+设置 CPU_BOOLEAN   nbr_neg_fmtd = 0; 来去掉警告
+
+   
+   
+   

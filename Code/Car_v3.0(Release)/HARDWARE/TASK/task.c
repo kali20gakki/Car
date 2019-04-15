@@ -31,7 +31,9 @@
 int num;
 extern u16 counter;
 
+u8 BUFF[16];
 
+extern u16 TIME;
 extern volatile int Process_R;
 extern volatile int Process_G;
 extern volatile int Process_B;
@@ -76,175 +78,241 @@ void delay_Ntimes(int Num)
 */
 void Task_Release(void)
 {
-    /** 1. 向左平移到线上 **/
-    Task_MoveLeft();
-
-    /** 2. 向前移动到Pad以及识别物料颜色顺序 **/
-    Task_MovePad();
-
-
-    /** 3. 识别二维码 **/
-    Servo1_SpeedRegulation(60,30);
-    Servo3_SpeedRegulation(145, 10);
-    Servo2_SpeedRegulation(115, 10);//60
-    Servo4_SpeedRegulation(40, 10);
-    Task_Qrcode();
-    Servo1_SpeedRegulation(60,30);
-    Servo2_SpeedRegulation(60, 10);//60
-    Servo3_SpeedRegulation(180, 10);
-    Servo4_SpeedRegulation(40, 10);
-
-
-    delay_Ntimes(2);
-
-    /** 4. 向后移动到第一个抓取位置以及抓取 **/
-    Strategy_Xaxis_Move(Position_Pad, Take_Material_Order[0], 20);
-
-    // 第一次抓取动作
-    delay_Ntimes(2);
-
-    /** 5. 先移动到指定色环线上 再向加工区左移**/
-    Strategy_Xaxis_Move(Take_Material_Order[0], Place_Process_Order[0], 20); // 先移动到指定色环线上
-
-    Task_MoveProcess();  // 向加工区移动
-
-    // 第一次放置动作
-    delay_Ntimes(2);
-
-    /** 6. 先原路返回再移动到抓取位置 **/
-    Task_MoveProcessToMaterial();  // 原路返回
-
-    Strategy_Xaxis_Move(Place_Process_Order[0], Take_Material_Order[1], 20); // 移动到指定色环线上
-
-    // 第二次抓取动作
-    delay_Ntimes(2);
-
-    /** 7. 先移动到指定色环线上 再向加工区左移**/
-    Strategy_Xaxis_Move(Take_Material_Order[1], Place_Process_Order[1], 20); // 先移动到指定色环线上
-
-    Task_MoveProcess();  // 向加工区移动
-
-    // 第二次放置动作
-    delay_Ntimes(2);
-
-
-    /** 8. 先原路返回再移动到抓取位置 **/
-    Task_MoveProcessToMaterial();  // 原路返回
-
-    Strategy_Xaxis_Move(Place_Process_Order[1], Take_Material_Order[2], 20); // 移动到指定色环线上
-
-    // 第三次抓取动作
-    delay_Ntimes(2);
-
-
-    /** 9. 先移动到指定色环线上 再向加工区左移**/
-    Strategy_Xaxis_Move(Take_Material_Order[2], Place_Process_Order[2], 20); // 先移动到指定色环线上
-
-    Task_MoveProcess();  // 向加工区移动
-
-    // 第三次放置动作
-    delay_Ntimes(2);
-
-
-    /** 10. 向外移动两根线为WIFI指令做准备 **/
-    Task_PrepareForWIFI();
-
-
-    /** 11. 等待WIFI指令 **/
-    Task_WIFI();
-
-
-    /** 12. 先移动到对应色块线上再向左平移 **/
-    Strategy_Xaxis_Move(Place_Process_Order[2], Take_Process_Order[0], 25); // 先移动到指定色环线上
-
-    Task_MoveToGrab();  // 再左平移
-
-    // 第一次抓取动作
-    delay_Ntimes(2);
-
-
-    /** 13. 先移动到指定色块线上再向前移动 **/
-    Strategy_Yaxis_Move(6, Place_Finish_Order[0], 20); // 移动到指定色块线
-
-    Strategy_Xaxis_Move(Take_Process_Order[0], 6, 25); // 向前移动
-
-    Car_TrackFront1(10);  // 速度应该较慢 后面加了延时无寻迹功能
-    delay_ms(1000);   // 适当延时
-    delay_ms(1000);   // 适当延时
-
-    Kinematic_Analysis(0, 0);  // 停止
-
-    // 第一次放置动作
-    delay_Ntimes(2);
-
-    /** 14. 先回到指定色块线上再向左平移**/
-    Strategy_Xaxis_Move(Position_Pad, Take_Process_Order[0], 20); // 移动到指定色块线
-
-    Strategy_Yaxis_Move(Place_Finish_Order[0], 5, 20); // 向左平移到加工区
-
-    Task_MoveToGrab();  // 再左平移
-
-    // 第二次抓取动作
-    delay_Ntimes(2);
-
-
-    /** 15. 先后退到指定色环线上再右移 **/
-    Strategy_Yaxis_Move(6, Place_Finish_Order[1], 20); // 先后退到指定色环线上
-
-    Strategy_Xaxis_Move(Take_Process_Order[1], Position_Pad, 25); // 再右移
-
-
-    Car_TrackFront1(10);  // 速度应该较慢 后面加了延时无寻迹功能
-    delay_ms(1000);   // 适当延时
-    delay_ms(1000);   // 适当延时
-
-    Kinematic_Analysis(0, 0);  // 停止
-    // 第二次放置动作
-    delay_Ntimes(2);
-
-
-    /** 16. 先回到指定色块线上再向左平移 **/
-    Strategy_Xaxis_Move(7, Take_Process_Order[2], 20); // 移动到指定色块线
-
-    Strategy_Yaxis_Move(Place_Finish_Order[1], 5, 20); // 向左平移到加工区
-
-    Task_MoveToGrab();  // 再左平移
-
-    // 第三次抓取动作
-    delay_Ntimes(2);
-
-    /** 17. 先后退到指定色环线上再右移**/
-    Strategy_Yaxis_Move(6, Place_Finish_Order[2], 20); // 先后退到指定色环线上
-
-    Strategy_Xaxis_Move(Take_Process_Order[2], Position_Pad, 25); // 再右移
-
-
-    Car_TrackFront1(15);  // 速度应该较慢 后面加了延时无寻迹功能
-    delay_ms(1000);   // 适当延时
-    delay_ms(1000);   // 适当延时
-
-    Kinematic_Analysis(0, 0);  // 停止
-
-    // 第三次放置动作
-    delay_Ntimes(2);
-
-
-    /** 18. 回到坐标1的线再向下平移 **/
-    Task_MoveBackHome();
-
-    Strategy_Yaxis_Move(Place_Finish_Order[2], 2, 20); // 向下平移
-
-    Task_Move1x1();
 }
 
 
 
-void Task_Test()
-{
-    Task_MoveLeft();         // 左移到线上
-    Task_MovePad();          // 寻迹到Pad
 
-    Task_Qrcode();           // 识别二维码
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-11
+*
+* @func  : Task_Debug  测试任务
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_Debug(void)
+{
+    /*1. 先左移到线上 再寻迹到PAD 识别二维码*******************************************************************/
+    Task_MoveLeft();   // 左平移
+    
+    usart2_printf("开始识别色块顺序?");
+
+    Task_MovePad();    // 向前移动到Pad以及识别物料颜色顺序
+    
+    usart2_printf("开始识别二维码?");
+    
+    Servo3_SpeedRegulation(160, 10);
+    
+    Servo2_SpeedRegulation(75, 10);
+    
+
+    Task_Qrcode();     // 识别二维码
+    /********************************************************************/
+
+    /*2. 后退到中间位置 第一次抓取放置*******************************************************************/
+    
+    usart2_printf("抓取第一个物料?");
+    Task_MoveMidMaterial();  // 后退到物料中间位置
+
+    /** 第一次抓取动作 **/
+    delay_ms(200);
+    if(Take_Material_Order[0] == 3)Action_3();
+    else if(Take_Material_Order[0] == 4)Action_4();
+    else if(Take_Material_Order[0] == 5)Action_5();
+    
+    /** 先移动到指定色块线上 **/
+    Strategy_Xaxis_Move(4, Place_Process_Order[0], 800);
+    delay_Ntimes(1);
+
+    /** 再向加工区移动 **/
+    Task_MoveProcess();
+
+    usart2_printf("放置第一个物料?");
+    /** 放置动作 **/
+    delay_ms(200);
+    Action_Place_Process();
+
+
+    /** 返回物料区 **/
+    Task_MoveProcessToMaterial();
+    delay_Ntimes(2);
+    /********************************************************************/
+
+    /*3. 回到物料区 第2次抓取放置*******************************************************************/
+     usart2_printf("抓取第二个物料?");
+    /** 移动到物料中间位置抓取 **/
+    Strategy_Xaxis_Move(Place_Process_Order[0], 4, 800);
+
+    /** 第二次抓取动作 **/
+    delay_ms(200);
+    if(Take_Material_Order[1] == 3)Action_3();
+    else if(Take_Material_Order[1] == 4)Action_4();
+    else if(Take_Material_Order[1] == 5)Action_5();
+
+    /** 移动到指定色环线上 **/
+    Strategy_Xaxis_Move(4, Place_Process_Order[1], 800);
+    delay_Ntimes(1);
+
+    /** 向加工区移动 **/
+    Task_MoveProcess();
+
+     usart2_printf("放置第二个物料?");
+    /** 放置动作 **/
+    delay_ms(200);
+    Action_Place_Process();
+
+    /** 返回物料区 **/
+    Task_MoveProcessToMaterial();
+    delay_Ntimes(2);
+    /********************************************************************/
+
+    /*4. 回到物料区 第3次抓取放置*******************************************************************/
+     usart2_printf("抓取第三个物料?");
+    /** 移动到物料中间位置抓取 **/
+    Strategy_Xaxis_Move(Place_Process_Order[1], 4, 800);
+    
+
+    /** 第三次抓取动作 **/
+    delay_ms(200);
+    if(Take_Material_Order[2] == 3)Action_3();
+    else if(Take_Material_Order[2] == 4)Action_4();
+    else if(Take_Material_Order[2] == 5)Action_5();
+
+
+    /** 移动到指定色环线上 **/
+    Strategy_Xaxis_Move(4, Place_Process_Order[2], 800);
+    delay_Ntimes(1);
+
+    /** 向加工区移动 **/
+    Task_MoveProcess();
+
+     usart2_printf("放置第三个物料?");
+    /** 放置动作 **/
+    delay_ms(200);
+    Action_Place_Process();
+
+
+    /** 后退为WIFI 指令做准备 **/
+    Task_PrepareForWIFI();
+    /********************************************************************/
+
+
+    /*5. 接收WIFI指令 第一次抓取放置*******************************************************************/
+    usart2_printf("等待WIFI指令?");
+    Task_WIFI();  // 接收WIFI指令
+
+    /** 移动到指定色环线 **/
+    Strategy_Xaxis_Move(Place_Process_Order[2], Take_Process_Order[0], 900);
+    
+    delay_Ntimes(1);
+    usart2_printf("抓取加工区第一个物料?");
+    Task_MoveToGrab();
+    /** 抓取动作 **/
+    delay_ms(200);
+    Action_Take_Process();
+
+
+    /** 后退到相应色块线上 **/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[0], 1000);
+    delay_Ntimes(1);
+
+    /** 向成品区移动 **/
+    Strategy_Xaxis_Move(Take_Process_Order[0], 6, 800);
+
+    /** 延时定位 **/
+    Task_PlaceFinish();
+
+    usart2_printf("放置加工区第一个物料?");
+    /** 放置动作 **/
+    delay_ms(200);
+    Action_Place_Finish();
+
+
+    /** 退回到下一个色块线 **/
+    Strategy_Xaxis_Move(7, Take_Process_Order[1], 900);
+    delay_ms(200);
+
+    /** 向加工区移动 **/
+    Strategy_Yaxis_Move(Place_Finish_Order[0], 5, 900);
+
+    /********************************************************************/
+
+
+    /*6. WIFI第二次抓取放置*******************************************************************/
+    /** 延时定位**/
+    Task_MoveToGrab();
+
+
+    /** 抓取动作 **/
+    usart2_printf("抓取加工区第二个物料?");
+    delay_ms(200);
+    Action_Take_Process();
+
+    /** 退到指定成品区指定色环线 **/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[1], 900);
+    delay_Ntimes(1);
+
+    /** 向成品区移动 **/
+    Strategy_Xaxis_Move(Take_Process_Order[1], 6, 900);
+
+    /** 延时定位 **/
+    Task_PlaceFinish();
+
+    /** 放置动作 **/
+    usart2_printf("放置加工区第二个物料?");
+    delay_ms(200);
+    Action_Place_Finish();
+
+
+    /** 退回到下一个色块线 **/
+    Strategy_Xaxis_Move(7, Take_Process_Order[2], 900);
+    delay_Ntimes(1);
+    /** 向加工区移动 **/
+    Strategy_Yaxis_Move(Place_Finish_Order[1], 5, 900);
+    /********************************************************************/
+    
+    /*7. 第三次抓取放置*******************************************************************/
+    /** 延时定位**/
+    Task_MoveToGrab();
+    delay_Ntimes(1);
+    /** 抓取动作 **/
+    usart2_printf("抓取加工区第三个物料?");
+    delay_ms(200);
+    Action_Take_Process();
+    
+    
+    /** 退到指定成品区指定色环线 **/
+    Strategy_Yaxis_Move(6, Place_Finish_Order[2], 900);
+    delay_Ntimes(1);
+
+    /** 向成品区移动 **/
+    Strategy_Xaxis_Move(Take_Process_Order[2], 6, 900);
+
+    /** 延时定位 **/
+    Task_PlaceFinish();
+
+    /** 放置动作 **/
+    usart2_printf("放置加工区第三个物料?");
+    delay_ms(200);
+    Action_Place_Finish();
+    
+    Action_FindBlob();
+    
+    /** 返回出发区 **/
+    usart2_printf("任务结束,回到出发点?");
+    Task_MoveBackHome();  
+
+    Strategy_Yaxis_Move(Place_Finish_Order[2], 2, 1000); // 向下平移
+
+    Task_Move1x1();
+    
+    sprintf(BUFF,"耗时%d分%d秒?",TIME/60,TIME %60);
+    
+    usart2_printf(BUFF);
+    /********************************************************************/
 }
 
 /*
@@ -299,7 +367,7 @@ void Task_MoveLeft(void)
     COUNT_FRONT_L = 0;
     while(COUNT_FRONT_L != 2)
     {
-        Kinematic_Analysis(-18, 0);
+        Kinematic_Analysis(-900, 0);
     }
     Kinematic_Analysis(0, 0);
 }
@@ -321,13 +389,13 @@ void Task_MovePad(void)
     COUNT_RIGHT_U = 0;
     while(COUNT_RIGHT_U < 5)
     {
-        Car_TrackFront1(40);
+        Car_TrackFront1(2000);
         Strategy_MaterialColor();
     }
     COUNT_RIGHT_U = 0;
     while(COUNT_RIGHT_U < 1)
     {
-        Car_TrackFront1(20);
+        Car_TrackFront1(700);
         Strategy_MaterialColor();
     }
 
@@ -336,6 +404,26 @@ void Task_MovePad(void)
 
 
 
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-11
+*
+* @func  : Task_MoveMidMaterial  移动到物料中间
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_MoveMidMaterial(void)
+{
+    COUNT_RIGHT_D = 0;
+    while(COUNT_RIGHT_D < 2)
+    {
+        Car_TrackBack1(800);
+    }
+    Kinematic_Analysis(0, 0);
+}
 
 /*
 * @auther: Mrtutu
@@ -352,25 +440,52 @@ void Task_MoveProcess(void)
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R < 2) // 12根线到加工区
     {
-        Car_TrackLeft1(20);
+        Car_TrackLeft1(1000);
     }
-    
+
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R < 10) // 12根线到加工区
     {
-        Car_TrackLeft1(40);
+        Car_TrackLeft1(1700);
     }
 
-    COUNT_FRONT_L = 0;
-    while(COUNT_FRONT_L < 1) // 12根线到加工区
+    /** 延时定位 **/
+    counter = 0;
+    TIM_Cmd(TIM11, ENABLE);
+    while(counter < 4)
     {
-        Car_TrackLeft1(20);
+        Car_TrackLeft1(800);
     }
+    TIM_Cmd(TIM11, DISABLE);
     Kinematic_Analysis(0, 0);
 
 }
 
 
+
+
+/*
+* @auther: Mrtutu
+* @date  ：2019-04-11
+*
+* @func  : Task_PlaceFinish
+* @param : None
+* @return: None
+* @note  : None
+*
+*/
+void Task_PlaceFinish(void)
+{
+    /** 延时定位 **/
+    counter = 0;
+    TIM_Cmd(TIM11, ENABLE);
+    while(counter < 9)
+    {
+        Car_TrackFront1(700);
+    }
+    TIM_Cmd(TIM11, DISABLE);
+    Kinematic_Analysis(0, 0);
+}
 
 /*
 * @auther: Mrtutu
@@ -385,14 +500,19 @@ void Task_MoveProcess(void)
 void Task_MoveProcessToMaterial(void)
 {
     COUNT_FRONT_R = 0;
-    while(COUNT_FRONT_R < 10) // 12根线到原料区
+    while(COUNT_FRONT_R < 2) // 12根线到原料区
     {
-        Car_TrackRight1(40);
+        Car_TrackRight1(800);
+    }
+    COUNT_FRONT_R = 0;
+    while(COUNT_FRONT_R < 8) // 12根线到原料区
+    {
+        Car_TrackRight1(1200);
     }
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R < 2) // 12根线到原料区
     {
-        Car_TrackRight1(15);
+        Car_TrackRight1(800);
     }
     Kinematic_Analysis(0, 0);
 
@@ -405,7 +525,7 @@ void Task_PrepareForWIFI(void)
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R < 2) // 向右移动两根线
     {
-        Car_TrackRight1(20);
+        Car_TrackRight1(700);
     }
 
     Kinematic_Analysis(0, 0);
@@ -419,14 +539,17 @@ void Task_MoveToGrab(void)
     COUNT_FRONT_R = 0;
     while(COUNT_FRONT_R < 2) // 向左移动两根线
     {
-        Car_TrackLeft1(20);
+        Car_TrackLeft1(800);
     }
 
-    COUNT_FRONT_L = 0;
-    while(COUNT_FRONT_L < 1) // 向左移动两根线
+    /** 延时定位 **/
+    counter = 0;
+    TIM_Cmd(TIM11, ENABLE);
+    while(counter < 6)
     {
-        Car_TrackLeft1(20);
+        Car_TrackLeft1(700);
     }
+    TIM_Cmd(TIM11, DISABLE);
     Kinematic_Analysis(0, 0);
 }
 
@@ -445,7 +568,15 @@ void Task_MoveToGrab(void)
 void Task_Qrcode(void)
 {
     Kinematic_Analysis(0, 0);
-    while(FLAG_QR)Strategy_QrcodeSquence();
+    while(FLAG_QR)
+    {
+        Strategy_QrcodeSquence();
+        Servo4_SpeedRegulation(100, 5);
+        delay_ms(200);
+        Servo4_SpeedRegulation(105, 5);
+        delay_ms(200);
+    }
+        
 }
 
 
@@ -463,26 +594,30 @@ void Task_MoveBackHome(void)
     COUNT_RIGHT_D = 0;
     while(COUNT_RIGHT_D < 5)
     {
-        Car_TrackBack1(40);
+        Car_TrackBack1(2000);
     }
     COUNT_RIGHT_D = 0;
     while(COUNT_RIGHT_D < 1)
     {
-        Car_TrackBack1(20);
+        Car_TrackBack1(800);
     }
     Kinematic_Analysis(0, 0);
-    
+
 }
 
 
 
 void Task_Move1x1(void)
 {
-    Kinematic_Analysis(15, -15);  // 斜走回来
-
-    delay_ms(1000);
-    delay_ms(1000);
-    delay_ms(1000);
+    /** 延时定位 **/
+    counter = 0;
+    TIM_Cmd(TIM11, ENABLE);
+    while(counter < 4)
+    {
+        Kinematic_Analysis(1500, -1500);  // 斜走回来
+    }
+    TIM_Cmd(TIM11, DISABLE);
+    
     Kinematic_Analysis(0, 0); // 停止
 }
 
